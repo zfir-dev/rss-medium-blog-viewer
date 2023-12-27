@@ -1,21 +1,36 @@
 /* Ember supports plain CSS out of the box. More info: https://cli.emberjs.com/release/advanced-use/stylesheets/ */
 
 img {
-  width: 100%;
+    width: 100%;
 }
 
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #ffffff;
+}
+
+.blogs,
+.blog {
+    padding-top: 80px;
+}
+
+
 .icon {
-  width: 50px;
+    width: 50px;
 }
 
 .category-span-container {
-  display: inline-block;
-  line-height: 2.5em;
+    display: inline-block;
+    line-height: 2.5em;
 }
 
 .category-span {
-  background-color: #0d6efd;
-  color: white;
-  border-radius: 5px;
-  padding: 5px;
+    background-color: #0d6efd;
+    color: #ffffff;
+    border-radius: 5px;
+    padding: 5px;
 }
