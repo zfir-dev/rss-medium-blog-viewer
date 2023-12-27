@@ -14,7 +14,7 @@ export default class ApplicationController extends Controller {
 
   @action
   async load() {
-    const medium_url = ENV.medium_url;;
+    const medium_url = ENV.medium_url;
     const rss_2_json_api_key = ENV.rss_2_json_api_key;
     try {
       const response = await fetch(
