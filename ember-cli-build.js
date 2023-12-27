@@ -8,6 +8,11 @@ module.exports = function (defaults) {
       bootstrapVersion: 5,
       importBootstrapCSS: true,
     },
+    fontawesome: {
+      icons: {
+        'free-solid-svg-icons': 'all',
+      },
+    },
     dotEnv: {
       clientAllowedKeys: ['MEDIUM_URL', 'RSS_2_JSON_API_KEY', 'ICON_URL'],
     }
