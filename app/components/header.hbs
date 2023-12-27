@@ -1,0 +1,12 @@
+{{!-- header.hbs --}}
+
+<header class="d-flex justify-content-between align-items-center p-3">
+  {{#if @selected}}
+    <button class="btn btn-outline-secondary back-button" {{on "click" @handleBack}}>
+      <FaIcon @icon="arrow-left" />
+    </button>
+    <a href={{@selected.link}} target="_blank" class="btn btn-primary">View on Medium</a>
+  {{else}}
+    <img src={{this.icon}} alt="Icon" class="icon rounded-circle">
+  {{/if}}
+</header>

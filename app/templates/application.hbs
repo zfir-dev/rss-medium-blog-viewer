@@ -1,7 +1,12 @@
-{{page-title "RssMediumBlogViewer"}}
+{{page-title "Zafir's Blogs"}}
 
-{{! The following component displays Ember's default welcome message. }}
-<WelcomePage />
-{{! Feel free to remove this! }}
+<Header @selected={{this.selected}} @handleBack={{this.handleBack}} />
+<div class="m-md-3 m-1">
+    {{#if this.selected}}
+    <Blog @item={{this.selected}} @handleBack={{this.handleBack}} />
+    {{else}}
+    <Blogs @items={{this.items}} @handleSelected={{this.handleSelected}} />
+    {{/if}}
+</div>
 
 {{outlet}}
