@@ -1,6 +1,6 @@
 {{!-- header.hbs --}}
 
-<header class="d-flex justify-content-between align-items-center p-3">
+<header class="header d-flex justify-content-between align-items-center p-3">
   {{#if @selected}}
     <button class="btn btn-outline-secondary back-button" {{on "click" @handleBack}}>
       <FaIcon @icon="arrow-left" />

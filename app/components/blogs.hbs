@@ -1,25 +1,27 @@
 {{!-- blogs.hbs --}}
 
-<div class="row">
-    {{#each @items as |item|}}
-    <div class="col-12 col-md-4 mb-3 d-flex align-items-stretch">
-        <div class="card w-100">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{item.title}}</h5>
-                {{#if item.categories}}
-                <p class="category-span-container card-text">
-                    {{#each item.categories as |category|}}
-                    <span class="category-span">{{category}}</span>
-                    {{/each}}
-                    <br>
-                </p>
-                {{/if}}
-                <p class="card-text">
-                    Published on {{this.getFormattedDate item.pubDate}}
-                </p>
-                <a href="#" class="btn btn-primary mt-auto" {{on "click" (fn this.select item)}}>Read More</a>
+<div class="blogs container">
+    <div class="row">
+        {{#each @items as |item|}}
+        <div class="col-12 col-md-4 mb-3 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{item.title}}</h5>
+                    {{#if item.categories}}
+                    <p class="category-span-container card-text">
+                        {{#each item.categories as |category|}}
+                        <span class="category-span">{{category}}</span>
+                        {{/each}}
+                        <br>
+                    </p>
+                    {{/if}}
+                    <p class="card-text">
+                        Published on {{this.getFormattedDate item.pubDate}}
+                    </p>
+                    <a href="#" class="btn btn-primary mt-auto" {{on "click" (fn this.select item)}}>Read More</a>
+                </div>
             </div>
         </div>
+        {{/each}}
     </div>
-    {{/each}}
 </div>
