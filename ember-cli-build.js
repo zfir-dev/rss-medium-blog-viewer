@@ -4,7 +4,13 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
-    // Add options here
+    'ember-bootstrap': {
+      bootstrapVersion: 5,
+      importBootstrapCSS: true,
+    },
+    dotEnv: {
+      clientAllowedKeys: ['MEDIUM_URL', 'RSS_2_JSON_API_KEY', 'ICON_URL'],
+    }
   });
 
   return app.toTree();
