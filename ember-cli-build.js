@@ -15,7 +15,7 @@ module.exports = function (defaults) {
     },
     dotEnv: {
       clientAllowedKeys: ['MEDIUM_URL', 'RSS_2_JSON_API_KEY', 'ICON_URL'],
-    }
+    },
   });
 
   return app.toTree();
