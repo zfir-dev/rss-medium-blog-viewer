@@ -18,9 +18,10 @@ module.exports = function (environment) {
       // Here you can pass flags/options to your application instance
       // when it is created
     },
+    page_title: process.env.PAGE_TITLE,
+    icon_url: process.env.ICON_URL,
     medium_url: process.env.MEDIUM_URL,
     rss_2_json_api_key: process.env.RSS_2_JSON_API_KEY,
-    icon_url: process.env.ICON_URL,
   };
 
   if (environment === 'development') {

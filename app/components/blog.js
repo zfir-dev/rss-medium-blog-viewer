@@ -4,7 +4,7 @@ import { htmlSafe } from '@ember/template';
 
 export default class BlogComponent extends Component {
   get title() {
-    return htmlSafe(this.args.items[this.args.selected].title);
+    return this.args.items[this.args.selected].title;
   }
 
   get content() {

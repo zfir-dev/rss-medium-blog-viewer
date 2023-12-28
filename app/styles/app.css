@@ -32,16 +32,20 @@ img {
     padding-bottom: 102px;
 }
 
-.icon {
+.blog .title {
+    overflow: hidden;
+}
+
+.header .icon {
     width: 50px;
 }
 
-.category-span-container {
+.blogs .category-span-container {
     display: inline-block;
     line-height: 2.5em;
 }
 
-.category-span {
+.blogs .category-span {
     background-color: #0d6efd;
     color: #ffffff;
     border-radius: 5px;
