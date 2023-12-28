@@ -22,9 +22,8 @@ export default class ApplicationController extends Controller {
       );
       const data = await response.json();
       data.items.forEach((item, index) => {
-        item.id = index;
+        item.id = index + 1;
       });
-      console.log(data.items);
       this.items = data.items;
     } catch (error) {
       console.error('Error fetching blog posts:', error);
@@ -32,8 +31,9 @@ export default class ApplicationController extends Controller {
   }
 
   @action
-  handleSelected(blog) {
-    this.selected = blog;
+  handleSelected(item) {
+    console.log(this.items.indexOf(item));
+    this.selected = this.items.indexOf(item).toString();
   }
 
   @action
