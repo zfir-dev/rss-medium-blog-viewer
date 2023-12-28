@@ -7,10 +7,11 @@
     </button>
     <a href={{this.link}} target="_blank" class="btn btn-primary" rel="noopener noreferrer">View on Medium</a>
   {{else}}
-    {{#if this.icon}}
-      <img src={{this.icon}} alt="Icon" class="icon rounded-circle">
+    {{#if this.iconUrl}}
+      <img src={{this.iconUrl}} alt="Icon" class="icon rounded-circle">
     {{else}}
       <h3 class="mb-0">{{@pageTitle}}</h3>
     {{/if}}
+    <a href={{this.mediumUrl}} target="_blank" class="btn btn-primary" rel="noopener noreferrer">View Medium</a>
   {{/if}}
 </header>
