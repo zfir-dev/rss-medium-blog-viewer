@@ -2,26 +2,29 @@
 
 <footer class="footer p-3">
   {{#if @selected}}
-    <div class="d-flex justify-content-center mb-2">
-      {{#if this.previousItem}}
-        <button class="previous btn btn-outline-primary me-2" type="button" {{on "click" (fn this.select this.previousItem)}}>
-          <FaIcon class="icon" @icon="arrow-left" /> {{this.previousItem.title}}
-        </button>
-      {{else}}
-        <button class="back btn btn-outline-secondary" type="button" {{on "click" @handleBack}}>
-          Back to Blogs
-        </button>
-      {{/if}}
-      {{#if this.nextItem}}
-        <button class="next btn btn-outline-primary" type="button" {{on "click" (fn this.select this.nextItem)}}>
-          {{this.nextItem.title}} <FaIcon class="icon" @icon="arrow-right" />
-        </button>
-      {{else}}
-        <button class="back btn btn-outline-secondary" type="button" {{on "click" @handleBack}}>
-          Back to Blogs
-        </button>
-      {{/if}}
-    </div>
+  <div class="d-flex justify-content-center mb-2">
+    {{#if this.previousItem}}
+    <button class="previous btn btn-outline-primary me-2" type="button" {{on "click" (fn this.select
+      this.previousItem)}}>
+      {{this.previousItem.title}}
+      <FaIcon class="icon" @icon="arrow-left" />
+    </button>
+    {{else}}
+    <button class="back btn btn-outline-secondary" type="button" {{on "click" @handleBack}}>
+      Back to Blogs
+    </button>
+    {{/if}}
+    {{#if this.nextItem}}
+    <button class="next btn btn-outline-primary" type="button" {{on "click" (fn this.select this.nextItem)}}>
+      {{this.nextItem.title}}
+      <FaIcon class="icon" @icon="arrow-right" />
+    </button>
+    {{else}}
+    <button class="back btn btn-outline-secondary" type="button" {{on "click" @handleBack}}>
+      Back to Blogs
+    </button>
+    {{/if}}
+  </div>
   {{/if}}
   <div class="d-flex justify-content-between align-items-center w-100">
     <div>
@@ -30,7 +33,7 @@
     </div>
     <div class="d-flex align-items-center">
       <p class="mb-0 small">Built with</p>
-      <img src="ember.svg" alt="Custom Ember Logo" class="ember-logo"/>
+      <img src="ember.svg" alt="Custom Ember Logo" class="ember-logo" />
     </div>
   </div>
 </footer>
