@@ -4,22 +4,22 @@
   {{#if @selected}}
   <div class="d-flex justify-content-center mb-2">
     {{#if this.previousItem}}
-    <button class="previous btn btn-outline-primary me-2" {{on "click" (fn this.select this.previousItem)}}>
+    <button class="previous btn btn-outline-primary me-2" type="button" {{on "click" (fn this.select this.previousItem)}}>
       {{this.previousItem.title}}
       <FaIcon class="icon" @icon="arrow-left" />
     </button>
     {{else}}
-    <button class="back btn btn-outline-secondary" {{on "click" @handleBack}}>
+    <button class="back btn btn-outline-secondary" type="button" {{on "click" @handleBack}}>
       Back to Blogs
     </button>
     {{/if}}
     {{#if this.nextItem}}
-    <button class="next btn btn-outline-primary" {{on "click" (fn this.select this.nextItem)}}>
+    <button class="next btn btn-outline-primary" type="button" {{on "click" (fn this.select this.nextItem)}}>
       {{this.nextItem.title}}
       <FaIcon class="icon" @icon="arrow-right" />
     </button>
     {{else}}
-    <button class="back btn btn-outline-secondary" {{on "click" @handleBack}}>
+    <button class="back btn btn-outline-secondary" type="button" {{on "click" @handleBack}}>
       Back to Blogs
     </button>
     {{/if}}
