@@ -1,72 +1,72 @@
 /* Ember supports plain CSS out of the box. More info: https://cli.emberjs.com/release/advanced-use/stylesheets/ */
 
 img {
-    width: 100%;
+  width: 100%;
 }
 
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #fff;
 }
 
 .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: #ffffff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #fff;
 }
 
 .blogs,
 .blog {
-    padding-top: 80px;
-    padding-bottom: 56px;
+  padding-top: 80px;
+  padding-bottom: 56px;
 }
 
 .blog {
-    padding-bottom: 114px;
+  padding-bottom: 114px;
 }
 
 .blog .title {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .header .icon {
-    width: 50px;
+  width: 50px;
 }
 
 .blogs .category-span-container {
-    display: inline-block;
-    line-height: 2.5em;
+  display: inline-block;
+  line-height: 2.5em;
 }
 
 .blogs .category-span {
-    background-color: #0d6efd;
-    color: #ffffff;
-    border-radius: 5px;
-    padding: 5px;
+  background-color: #0d6efd;
+  color: #fff;
+  border-radius: 5px;
+  padding: 5px;
 }
 
 .footer .previous,
 .footer .next,
 .footer .back {
-    width: 200px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.9em;
-    margin-right: 10px;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+  margin-right: 10px;
 }
 
 .footer .previous .icon {
-    float: left;
+  float: left;
 }
 
 .footer .next .icon {
-    float: right;
+  float: right;
 }

@@ -14,7 +14,12 @@ module.exports = function (defaults) {
       },
     },
     dotEnv: {
-      clientAllowedKeys: ['PAGE_TITLE', 'ICON_URL', 'MEDIUM_URL', 'RSS_2_JSON_API_KEY'],
+      clientAllowedKeys: [
+        'PAGE_TITLE',
+        'ICON_URL',
+        'MEDIUM_URL',
+        'RSS_2_JSON_API_KEY',
+      ],
     },
   });
 
