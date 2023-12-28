@@ -1,0 +1,18 @@
+{{!-- footer.hbs --}}
+
+<footer class="footer p-3">
+  {{#if @selected}}
+    <div class="d-flex justify-content-center mb-2">
+      <button class="btn btn-outline-secondary me-2" {{on "click" (fn this.select this.previousItem)}}>
+        <FaIcon @icon="arrow-left" /> Previous
+      </button>
+      <button class="btn btn-outline-secondary" {{on "click" (fn this.select this.nextItem)}}>
+        Next <FaIcon @icon="arrow-right" />
+      </button>
+    </div>
+  {{/if}}
+  <div class="d-flex justify-content-center align-items-center">
+    <p class="mb-0 me-3">{{@pageTitle}}</p>
+    <p class="mb-0">&copy; {{this.currentYear}}</p>
+  </div>
+</footer>

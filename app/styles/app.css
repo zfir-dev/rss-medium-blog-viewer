@@ -13,11 +13,24 @@ img {
     background-color: #ffffff;
 }
 
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #ffffff;
+}
+
 .blogs,
 .blog {
     padding-top: 80px;
+    padding-bottom: 56px;
 }
 
+.blog {
+    padding-bottom: 102px;
+}
 
 .icon {
     width: 50px;

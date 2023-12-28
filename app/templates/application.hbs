@@ -1,12 +1,13 @@
 {{page-title "Zafir's Blogs"}}
 
-<Header @selected={{this.selected}} @handleBack={{this.handleBack}} />
+<Header @pageTitle="Zafir's Blogs" @handleBack={{this.handleBack}} @items={{this.items}} @selected={{this.selected}} />
 <div class="m-md-3 m-1">
     {{#if this.selected}}
-    <Blog @item={{this.selected}} @handleBack={{this.handleBack}} />
+    <Blog @handleBack={{this.handleBack}} @items={{this.items}} @selected={{this.selected}} />
     {{else}}
     <Blogs @items={{this.items}} @handleSelected={{this.handleSelected}} />
     {{/if}}
 </div>
+<Footer @pageTitle="Zafir's Blogs" @items={{this.items}} @selected={{this.selected}} @handleSelected={{this.handleSelected}} />
 
 {{outlet}}

@@ -5,8 +5,12 @@
     <button class="btn btn-outline-secondary back-button" type="button" {{on "click" @handleBack}}>
       <FaIcon @icon="arrow-left" />
     </button>
-    <a href={{@selected.link}} target="_blank" class="btn btn-primary" rel="noopener noreferrer">View on Medium</a>
+    <a href={{this.link}} target="_blank" class="btn btn-primary" rel="noopener noreferrer">View on Medium</a>
   {{else}}
-    <img src={{this.icon}} alt="Icon" class="icon rounded-circle">
+    {{#if this.icon}}
+      <img src={{this.icon}} alt="Icon" class="icon rounded-circle">
+    {{else}}
+      <h3 class="mb-0">{{@pageTitle}}</h3>
+    {{/if}}
   {{/if}}
 </header>
