@@ -1,6 +1,7 @@
 {{page-title this.pageTitle}}
 
-<Header @pageTitle={{this.pageTitle}} @handleBack={{this.handleBack}} @items={{this.items}} @selected={{this.selected}} />
+<Header @pageTitle={{this.pageTitle}} @handleBack={{this.handleBack}} @items={{this.items}}
+    @selected={{this.selected}} />
 <div class="m-md-3 m-1">
     {{#if this.selected}}
     <Blog @handleBack={{this.handleBack}} @items={{this.items}} @selected={{this.selected}} />
@@ -8,6 +9,7 @@
     <Blogs @items={{this.items}} @handleSelected={{this.handleSelected}} />
     {{/if}}
 </div>
-<Footer @pageTitle={{this.pageTitle}} @items={{this.items}} @selected={{this.selected}} @handleSelected={{this.handleSelected}} />
+<Footer @pageTitle={{this.pageTitle}} @handleBack={{this.handleBack}} @items={{this.items}} @selected={{this.selected}}
+    @handleSelected={{this.handleSelected}} />
 
 {{outlet}}

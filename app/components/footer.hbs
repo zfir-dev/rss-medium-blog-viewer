@@ -2,14 +2,28 @@
 
 <footer class="footer p-3">
   {{#if @selected}}
-    <div class="d-flex justify-content-center mb-2">
-      <button class="btn btn-outline-secondary me-2" {{on "click" (fn this.select this.previousItem)}}>
-        <FaIcon @icon="arrow-left" /> Previous
-      </button>
-      <button class="btn btn-outline-secondary" {{on "click" (fn this.select this.nextItem)}}>
-        Next <FaIcon @icon="arrow-right" />
-      </button>
-    </div>
+  <div class="d-flex justify-content-center mb-2">
+    {{#if this.previousItem}}
+    <button class="previous btn btn-outline-primary me-2" {{on "click" (fn this.select this.previousItem)}}>
+      {{this.previousItem.title}}
+      <FaIcon class="icon" @icon="arrow-left" />
+    </button>
+    {{else}}
+    <button class="back btn btn-outline-secondary" {{on "click" @handleBack}}>
+      Back to Blogs
+    </button>
+    {{/if}}
+    {{#if this.nextItem}}
+    <button class="next btn btn-outline-primary" {{on "click" (fn this.select this.nextItem)}}>
+      {{this.nextItem.title}}
+      <FaIcon class="icon" @icon="arrow-right" />
+    </button>
+    {{else}}
+    <button class="back btn btn-outline-secondary" {{on "click" @handleBack}}>
+      Back to Blogs
+    </button>
+    {{/if}}
+  </div>
   {{/if}}
   <div class="d-flex justify-content-center align-items-center">
     <p class="mb-0 me-3">{{@pageTitle}}</p>
