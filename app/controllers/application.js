@@ -15,11 +15,11 @@ export default class ApplicationController extends Controller {
 
   @action
   async load() {
-    const medium_url = ENV.medium_url;
-    const rss_2_json_api_key = ENV.rss_2_json_api_key;
+    const mediumFeedUrl = ENV.medium_feed_url;
+    const rss2JsonApiKey = ENV.rss_2_json_api_key;
     try {
       const response = await fetch(
-        `https://api.rss2json.com/v1/api.json?rss_url=${medium_url}&api_key=${rss_2_json_api_key}`,
+        `https://api.rss2json.com/v1/api.json?rss_url=${mediumFeedUrl}&api_key=${rss2JsonApiKey}`,
       );
       const data = await response.json();
       this.items = data.items;
