@@ -70,3 +70,8 @@ img {
 .footer .next .icon {
   float: right;
 }
+
+.footer .ember-logo {
+  height: 30px;
+  width: auto;
+}
