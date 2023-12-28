@@ -1,9 +1,10 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import ENV from 'rss-medium-blog-viewer/config/environment'; // Import ENV
+import ENV from 'rss-medium-blog-viewer/config/environment';
 
 export default class ApplicationController extends Controller {
+  @tracked pageTitle = ENV.page_title;
   @tracked selected = null;
   @tracked items = [];
 
