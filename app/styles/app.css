@@ -29,7 +29,7 @@ img {
 }
 
 .blog {
-    padding-bottom: 102px;
+    padding-bottom: 114px;
 }
 
 .blog .title {
@@ -50,4 +50,23 @@ img {
     color: #ffffff;
     border-radius: 5px;
     padding: 5px;
+}
+
+.footer .previous,
+.footer .next,
+.footer .back {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.9em;
+    margin-right: 10px;
+}
+
+.footer .previous .icon {
+    float: left;
+}
+
+.footer .next .icon {
+    float: right;
 }

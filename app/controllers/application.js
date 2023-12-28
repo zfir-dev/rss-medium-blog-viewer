@@ -22,9 +22,6 @@ export default class ApplicationController extends Controller {
         `https://api.rss2json.com/v1/api.json?rss_url=${medium_url}&api_key=${rss_2_json_api_key}`,
       );
       const data = await response.json();
-      data.items.forEach((item, index) => {
-        item.id = index + 1;
-      });
       this.items = data.items;
     } catch (error) {
       console.error('Error fetching blog posts:', error);
