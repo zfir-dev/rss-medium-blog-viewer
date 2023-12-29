@@ -17,30 +17,30 @@ You will need the following things properly installed on your computer.
 
 ## Installation
 
-* `git clone <repository-url>` this repository
+* `git clone <repository-url>`
 * `cd rss-medium-blog-viewer`
 * `npm install`
 
 ## Setup Environment Variables
 
 * Create a .env file
-* Add the following properties based on your details in the file
-  * PAGE_TITLE
+* Add the following properties based on your details in the file:
+  * `PAGE_TITLE`
     * Use to set title of the page
-  * ICON_URL
+  * `ICON_URL`
     * Use to set an icon on the top left of the page
     * Can be a local file that is uploaded in the public folder
     * Can be an online link
     * If not set, it will use the title of the page as default
-  * MEDIUM_URL
+  * `MEDIUM_URL`
     * Original link of your medium page
     * Example 1: https://medium.com/@zfir
     * Example 2: https://zfir.medium.com/
-  * MEDIUM_FEED_URL
+  * `MEDIUM_FEED_URL`
     * Link to the feed of your medium page
     * Note: It is not same as the MEDIUM_URL
     * Example: https://medium.com/feed/@zfir
-  * RSS_2_JSON_API_KEY
+  * `RSS_2_JSON_API_KEY`
     * API Key from the service rss2json
     * Sign up for a key on this [link](https://rss2json.com/)
 
