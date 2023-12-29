@@ -4,7 +4,7 @@ The RSS Medium Blog Viewer is an Ember application designed to transform your Me
 
 ## Demo
 
-Here is a [demo](https://blog.zfir.dev/) of the application
+Here is a [demo](https://blog.zfir.dev/) of the application.
 
 ## Prerequisites
 
