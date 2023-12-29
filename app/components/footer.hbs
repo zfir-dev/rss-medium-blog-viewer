@@ -1,4 +1,4 @@
-{{!-- app/components/footer.hbs --}}
+{{!-- footer.hbs --}}
 
 <footer class="footer p-3">
   {{#if @selected}}
@@ -31,9 +31,16 @@
       <p class="mb-0 small">{{@pageTitle}}</p>
       <p class="mb-0 small">&copy; {{this.currentYear}}</p>
     </div>
+    <div>
+      <a href="https://github.com/zfir-dev/rss-medium-blog-viewer" target="_blank">
+        <img src="github.svg" alt="Custom Github Logo" class="github-logo" />
+      </a>
+    </div>
     <div class="d-flex align-items-center">
       <p class="mb-0 small">Built with</p>
-      <img src="ember.svg" alt="Custom Ember Logo" class="ember-logo" />
+      <a href="https://emberjs.com/" target="_blank">
+        <img src="ember.svg" alt="Custom Ember Logo" class="ember-logo" />
+      </a>
     </div>
   </div>
 </footer>
