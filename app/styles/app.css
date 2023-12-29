@@ -25,11 +25,11 @@ img {
 .blogs,
 .blog {
   padding-top: 80px;
-  padding-bottom: 56px;
+  padding-bottom: 74px;
 }
 
 .blog {
-  padding-bottom: 114px;
+  padding-bottom: 132px;
 }
 
 .blog .title {
@@ -61,6 +61,10 @@ img {
   text-overflow: ellipsis;
   font-size: 0.9em;
   margin-right: 10px;
+}
+
+.footer .next {
+  margin-right: 0;
 }
 
 .footer .previous .icon {
