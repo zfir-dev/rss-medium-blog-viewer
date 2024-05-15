@@ -1,6 +1,9 @@
 {{!-- blogs.hbs --}}
 
 <div class="blogs container">
+    <h1 class="pt-3 pb-3">
+        Last {{@items.length}} Blog{{#unless (eq @items.length 1)}}s{{/unless}}
+    </h1>
     <div class="row">
         {{#each @items as |item|}}
         <div class="col-12 col-md-4 mb-3 d-flex align-items-stretch">
