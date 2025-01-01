@@ -2,7 +2,7 @@
 
 <footer class="footer p-3">
   {{#if @selected}}
-  <div class="d-flex justify-content-center mb-2">
+  <div class="d-flex justify-content-center mb-2" {{on-insert this.setupListeners}} {{on-destroy this.removeListeners}}>
     {{#if this.previousItem}}
     <button class="previous btn btn-outline-primary me-2" type="button" {{on "click" (fn this.select
       this.previousItem)}}>
@@ -32,14 +32,14 @@
       <p class="mb-0 small">&copy; {{this.currentYear}}</p>
     </div>
     <div class="col text-center">
-      <a href="https://github.com/zfir-dev/rss-medium-blog-viewer" target="_blank">
-        <img src="github.svg" alt="Custom Github Logo" class="github-logo" />
+      <a href="https://github.com/zfir-dev/rss-medium-blog-viewer" target="_blank" rel="noopener noreferrer">
+        <img src="github.svg" alt="Custom Github" class="github-logo" />
       </a>
     </div>
     <div class="col d-flex align-items-center justify-content-center">
       <p class="mb-0 small text-end">Built with</p>
-      <a href="https://emberjs.com/" target="_blank">
-        <img src="ember.svg" alt="Custom Ember Logo" class="ember-logo" />
+      <a href="https://emberjs.com/" target="_blank" rel="noopener noreferrer">
+        <img src="ember.svg" alt="Custom Ember" class="ember-logo" />
       </a>
     </div>
   </div>

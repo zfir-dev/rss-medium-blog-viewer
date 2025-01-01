@@ -30,7 +30,6 @@ export default class ApplicationController extends Controller {
 
   @action
   handleSelected(item) {
-    console.log(this.items.indexOf(item));
     this.selected = this.items.indexOf(item).toString();
   }
 
