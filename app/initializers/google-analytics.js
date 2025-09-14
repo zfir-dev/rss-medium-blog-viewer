@@ -15,7 +15,9 @@ export function initialize(/* application */) {
   document.head.appendChild(script);
 
   window.dataLayer = window.dataLayer || [];
-  function gtag(){ window.dataLayer.push(arguments); }
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
   window.gtag = gtag;
 
   gtag('js', new Date());
@@ -23,5 +25,5 @@ export function initialize(/* application */) {
 }
 
 export default {
-  initialize
+  initialize,
 };
