@@ -40,7 +40,7 @@ module('Unit | Initializer | google-analytics', function (hooks) {
     await this.application.boot();
 
     let script = document.querySelector(
-      'script[src*="googletagmanager.com/gtag/js?id=G-TEST123"]'
+      'script[src*="googletagmanager.com/gtag/js?id=G-TEST123"]',
     );
 
     assert.ok(script, 'GA script was injected with correct id');
@@ -49,6 +49,10 @@ module('Unit | Initializer | google-analytics', function (hooks) {
   test('it defines window.gtag', async function (assert) {
     await this.application.boot();
 
-    assert.ok(typeof window.gtag === 'function', 'window.gtag is defined');
+    assert.strictEqual(
+      typeof window.gtag,
+      'function',
+      'window.gtag is defined',
+    );
   });
 });
