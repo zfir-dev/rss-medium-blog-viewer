@@ -1,5 +1,4 @@
 import Application from '@ember/application';
-
 import config from 'rss-medium-blog-viewer/config/environment';
 import { initialize } from 'rss-medium-blog-viewer/initializers/google-analytics';
 import { module, test } from 'qunit';
@@ -8,6 +7,9 @@ import { run } from '@ember/runloop';
 
 module('Unit | Initializer | google-analytics', function (hooks) {
   hooks.beforeEach(function () {
+    this.originalGaId = config.ga_id;
+    config.ga_id = 'G-TEST123';
+
     this.TestApplication = class TestApplication extends Application {
       modulePrefix = config.modulePrefix;
       podModulePrefix = config.podModulePrefix;
@@ -26,12 +28,27 @@ module('Unit | Initializer | google-analytics', function (hooks) {
 
   hooks.afterEach(function () {
     run(this.application, 'destroy');
+
+    document
+      .querySelectorAll('script[src*="googletagmanager.com/gtag/js"]')
+      .forEach((el) => el.remove());
+
+    config.ga_id = this.originalGaId;
   });
 
-  // TODO: Replace this with your real tests.
-  test('it works', async function (assert) {
+  test('it injects the GA script', async function (assert) {
     await this.application.boot();
 
-    assert.ok(true);
+    let script = document.querySelector(
+      'script[src*="googletagmanager.com/gtag/js?id=G-TEST123"]'
+    );
+
+    assert.ok(script, 'GA script was injected with correct id');
+  });
+
+  test('it defines window.gtag', async function (assert) {
+    await this.application.boot();
+
+    assert.ok(typeof window.gtag === 'function', 'window.gtag is defined');
   });
 });
