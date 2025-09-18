@@ -17,6 +17,7 @@ module.exports = function (defaults) {
       clientAllowedKeys: [
         'PAGE_TITLE',
         'ICON_URL',
+        'GA_ID',
         'MEDIUM_URL',
         'MEDIUM_FEED_URL',
         'RSS_2_JSON_API_KEY',

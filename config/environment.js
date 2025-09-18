@@ -20,6 +20,7 @@ module.exports = function (environment) {
     },
     page_title: process.env.PAGE_TITLE,
     icon_url: process.env.ICON_URL,
+    ga_id: process.env.GA_ID,
     medium_url: process.env.MEDIUM_URL,
     medium_feed_url: process.env.MEDIUM_FEED_URL,
     rss_2_json_api_key: process.env.RSS_2_JSON_API_KEY,
