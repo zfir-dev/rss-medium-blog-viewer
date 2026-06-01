@@ -6,7 +6,15 @@ export default class HeaderComponent extends Component {
   @tracked iconUrl = ENV.icon_url;
   @tracked mediumUrl = ENV.medium_url;
 
+  get selectedItem() {
+    if (this.args.selected === null || this.args.selected === undefined) {
+      return null;
+    }
+
+    return this.args.items?.[Number(this.args.selected)];
+  }
+
   get link() {
-    return this.args.items[this.args.selected].link;
+    return this.selectedItem?.link;
   }
 }
