@@ -25,3 +25,7 @@
 /DEBUG/
 
 .env
+
+# generated personal blog archive
+/public/blogs.json
+/public/sitemap.xml
