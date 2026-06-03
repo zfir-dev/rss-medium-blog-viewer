@@ -46,7 +46,9 @@ You will need the following things properly installed on your computer.
   - `SEO_DESCRIPTION`
     - Optional default meta description for the blog index page
   - `SITE_URL`
-    - Optional production URL used by `npm run sync:blogs` to generate `public/sitemap.xml`
+    - Optional production URL used by `npm run sync:blogs` to generate `public/sitemap.xml` and read the previously deployed `/blogs.json` archive
+  - `BLOG_ARCHIVE_URL`
+    - Optional URL for an existing `blogs.json` archive. Defaults to `${SITE_URL}/blogs.json` when `SITE_URL` is set
 
 Here is an example of how your .env file should look:
 
@@ -58,6 +60,7 @@ MEDIUM_FEED_URL=https://medium.com/feed/@zfir
 RSS_2_JSON_API_KEY=<YOUR_API_KEY>
 SEO_DESCRIPTION=Technical essays and product notes by Zafir
 SITE_URL=https://blog.zfir.dev
+BLOG_ARCHIVE_URL=https://blog.zfir.dev/blogs.json
 ```
 
 ## Saving Medium Posts
@@ -66,9 +69,9 @@ Medium RSS only exposes the latest 10 posts. Run the archive sync regularly so o
 
 - `npm run sync:blogs`
 
-The command merges the latest RSS items into `public/blogs.json` without deleting older saved posts. Commit the updated `public/blogs.json` so the archive is available to new visitors and search crawlers. When `SITE_URL` is set, the same command also writes `public/sitemap.xml`.
+The command merges the latest RSS items with the previously deployed archive, then writes `public/blogs.json` for the current build. `public/blogs.json` and `public/sitemap.xml` are generated personal files and are ignored by git, so the public project can stay reusable.
 
-For best results, run this command before each production build or on a scheduled CI job. The app also keeps a browser-local cache as a fallback, but that cache is not shared with new visitors.
+For best results, run this command before each production build. On the first deployment it can only save the latest Medium RSS items; after that it will keep older posts by reading the previous deployment's `/blogs.json`. The app also keeps a browser-local cache as a fallback, but that cache is not shared with new visitors.
 
 ## Local Development
 

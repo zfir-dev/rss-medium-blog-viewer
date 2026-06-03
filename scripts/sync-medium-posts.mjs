@@ -9,14 +9,16 @@ await loadDotEnv();
 const mediumFeedUrl = process.env.MEDIUM_FEED_URL;
 const rss2JsonApiKey = process.env.RSS_2_JSON_API_KEY;
 const siteUrl = trimTrailingSlash(process.env.SITE_URL || "");
+const archiveUrl = process.env.BLOG_ARCHIVE_URL || archiveUrlFromSite(siteUrl);
 
 if (!mediumFeedUrl || !rss2JsonApiKey) {
   throw new Error("MEDIUM_FEED_URL and RSS_2_JSON_API_KEY are required.");
 }
 
-const existingPosts = await readJson(archivePath, []);
+const localPosts = await readJson(archivePath, []);
+const remotePosts = await fetchArchivePosts(archiveUrl);
 const latestPosts = await fetchMediumPosts(mediumFeedUrl, rss2JsonApiKey);
-const posts = mergePosts([...latestPosts, ...existingPosts]);
+const posts = mergePosts([...latestPosts, ...remotePosts, ...localPosts]);
 
 await writeFile(archivePath, `${JSON.stringify(posts, null, 2)}\n`);
 
@@ -29,6 +31,26 @@ console.log(
     posts.length === 1 ? "" : "s"
   } to public/blogs.json.`,
 );
+
+async function fetchArchivePosts(url) {
+  if (!url) {
+    return [];
+  }
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
 
 async function fetchMediumPosts(feedUrl, apiKey) {
   const url = new URL("https://api.rss2json.com/v1/api.json");
@@ -192,6 +214,14 @@ function escapeXml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+function archiveUrlFromSite(site) {
+  if (!site) {
+    return "";
+  }
+
+  return `${site}/blogs.json`;
 }
 
 function trimTrailingSlash(value) {
