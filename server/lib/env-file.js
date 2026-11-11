@@ -4,7 +4,7 @@ const fs = require('fs');
 
 /**
  * Minimal .env loader (KEY=value, optional quotes, # comments). Values already
- * present in process.env win, so Docker/Coolify env vars take precedence.
+ * present in process.env win, so real environment variables (e.g. from Docker or the host) take precedence.
  */
 function loadEnvFile(filePath, env = process.env) {
   let raw;

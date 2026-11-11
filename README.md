@@ -1,83 +1,25 @@
 # rss-medium-blog-viewer
 
-The RSS Medium Blog Viewer is an Ember application designed to transform your Medium blog into a personalized, self-hosted blog. This enables bloggers to display their Medium content in a unique and customizable format on their personal website.
+A self-hosted front-end for a Medium blog. An Ember app displays your posts,
+and a small Node server adds real SEO plus a permanent archive — Medium's RSS
+feed only returns the last 10 posts.
 
 ## Demo
 
-Here is a [demo](https://blog.zfir.dev/) of the application.
+[https://blog.zfir.dev/](https://blog.zfir.dev/)
 
-## Prerequisites
+## Features
 
-You will need the following things properly installed on your computer.
+- Your Medium posts on a site you control, with your own title and icon
+- Shareable post URLs: `/posts/<slug>-<mediumId>` (resolved by the Medium id;
+  a wrong or outdated slug gets a `301` to the canonical path)
+- Server-side SEO: title, description, canonical URL, Open Graph, Twitter
+  cards, and JSON-LD, so crawlers and link previews do not need JavaScript
+- Permanent post archive, sitemap, and robots.txt
+- Import of older posts (beyond the last 10 in the RSS feed)
+- Deploy anywhere that can run Docker or Node
 
-* [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/) (with npm)
-* [Ember CLI](https://cli.emberjs.com/release/)
-* [Google Chrome](https://google.com/chrome/)
-
-## Installation
-
-* `git clone <repository-url>`
-* `cd rss-medium-blog-viewer`
-* `npm install`
-
-## Setup Environment Variables
-
-* Create a .env file
-* Add the following properties based on your details in the file:
-  * `PAGE_TITLE`
-    * Use to set title of the page
-  * `ICON_URL`
-    * Use to set an icon on the top left of the page
-    * Can be a local file that is uploaded in the public folder
-    * Can be an online link
-    * If not set, it will use the title of the page as default
-  * `MEDIUM_URL`
-    * Original link of your medium page
-    * Example 1: https://medium.com/@zfir
-    * Example 2: https://zfir.medium.com/
-  * `MEDIUM_FEED_URL`
-    * Link to the feed of your medium page
-    * Note: It is not same as the MEDIUM_URL
-    * Example: https://medium.com/feed/@zfir
-  * `RSS_2_JSON_API_KEY`
-    * API Key from the service rss2json
-    * Sign up for a key on this [link](https://rss2json.com/)
-
-The application also updates the page title, description, canonical URL, Open
-Graph/Twitter metadata, and JSON-LD structured data for the selected article.
-Each article has a shareable, Medium-style URL: `/posts/<slug>-<mediumId>`,
-e.g. `/posts/creating-a-vm-on-oracle-cloud-using-always-free-resources-8ae23c507403`.
-The slug mirrors the Medium link (falling back to a slug of the title) and the
-id is Medium's 12-character post id. Posts are looked up by the id only, so a
-wrong or outdated slug redirects (301 on the server) to the current URL.
-
-Here is an example of how your .env file should look:
-```
-PAGE_TITLE="Zafir's Blogs"
-ICON_URL=https://miro.medium.com/v2/resize:fill:64:64/1*NxSbBQe2m7Hab7G4KljJhA.jpeg
-MEDIUM_URL=https://zfir.medium.com/
-MEDIUM_FEED_URL=https://medium.com/feed/@zfir
-RSS_2_JSON_API_KEY=<YOUR_API_KEY>
-```
-
-## Local Development
-
-* `npm run start`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
-
-## Deployment
-
-There are two ways to deploy the app:
-
-1. **Node server (recommended, needed for SEO).** A tiny dependency-free Node
-   server in `server/` serves the built app, renders SEO tags on the server and
-   keeps a persistent archive of every post ever seen in the feed.
-2. **Plain static hosting.** `dist/` works on any static host (GitHub Pages,
-   Netlify, S3...). SEO tags are then only set by JavaScript in the browser,
-   and only the last 10 posts from the Medium feed are shown.
-
-### Architecture
+## Architecture
 
 ```
                  every hour                       POST /api/import
@@ -94,60 +36,63 @@ There are two ways to deploy the app:
                  /data/posts.json (volume, source of truth)      Medium post pages
 ```
 
-* The **server** stays lean: plain Node, no npm dependencies, no browser.
-* The **archive** (`DATA_DIR/posts.json`, a Docker volume) is the source of
-  truth. Posts are merged by guid and never deleted.
-* The **RSS merge** runs on startup and every `FEED_REFRESH_INTERVAL_MINUTES`.
-* The **importer** scrapes older posts (Medium's RSS only has the last 10)
-  somewhere that can get past Medium's Cloudflare checks, and pushes them to
-  `POST /api/import`.
+- The **server** is plain Node: no npm dependencies, no browser.
+- The **archive** (`DATA_DIR/posts.json`) is the source of truth. Posts are
+  merged by guid and never deleted. On startup and every
+  `FEED_REFRESH_INTERVAL_MINUTES`, the server merges the latest RSS items.
+- The **importer** scrapes older posts from a machine that can get past
+  Medium's Cloudflare checks, and pushes them to `POST /api/import`.
 
-### Build
+`dist/` can also be uploaded to a static host, but then SEO is client-side
+only, only the last 10 posts appear, and there is no sitemap.
 
-* Local: `npm exec ember build`
-* Production: `npm run build` (output in `dist/`)
+## Quick start
 
-The `PAGE_TITLE`, `ICON_URL`, `GA_ID`, `MEDIUM_URL`, `MEDIUM_FEED_URL`,
-`RSS_2_JSON_API_KEY` and `POSTS_API_URL` variables are baked into the bundle at
-build time.
-
-### Node server (SEO + post archive)
+You need [Git](https://git-scm.com/) and [Node.js](https://nodejs.org/) (with
+npm). Chrome is only required for Ember tests.
 
 ```
-npm run build
-npm run serve        # node server/index.js, listens on http://0.0.0.0:3000
+git clone <repository-url>
+cd rss-medium-blog-viewer
+npm install
 ```
 
-What it does:
+Create a `.env` file:
 
-* **Server-side SEO.** For `/` and `/posts/<slug>-<id>` it injects `<title>`,
-  meta description, canonical URL, Open Graph (`og:type` article, title,
-  description, image, url, site_name), Twitter card (`summary_large_image` when
-  the article has a thumbnail) and JSON-LD `BlogPosting` into `index.html`, so
-  crawlers and link previews (Slack, X, Facebook, LinkedIn...) see them
-  without running JavaScript. The image is the article thumbnail, falling back
-  to `ICON_URL`.
-* **Persistent post archive.** Medium's RSS feed only returns the last 10
-  posts. On startup and then every `FEED_REFRESH_INTERVAL_MINUTES`, the server
-  fetches the feed (via rss2json, same as the app) and merges the posts into
-  `DATA_DIR/posts.json`. Posts are keyed by their id, updated when they change
-  and never deleted, so older posts keep their SEO tags, sitemap entry and
-  shareable links forever. Keep `DATA_DIR` on a persistent volume.
-* **`/api/posts`** returns the whole archive (newest first, same shape as
-  rss2json items, plus `slug` and `path`). The app uses it automatically and falls back to rss2json
-  when it is unavailable (static hosting).
-* **Post URLs.** `/posts/<slug>-<id>` is resolved by the trailing id; a
-  different slug, upper-case, a bare id or a trailing slash gets a `301` to the
-  canonical path. Unknown posts get a `404` with the app shell (`noindex`).
-* **`/sitemap.xml`** lists the home page and every archived post.
-* **`/robots.txt`** allows everything and points to the sitemap.
-* **`/healthz`** returns `{ "status": "ok" }` for health checks.
-* **`/api/import`** accepts posts pushed by the importer (see below). Open it
-  in a browser for a usage page.
+```
+PAGE_TITLE="Zafir's Blogs"
+ICON_URL=https://miro.medium.com/v2/resize:fill:64:64/1*NxSbBQe2m7Hab7G4KljJhA.jpeg
+MEDIUM_URL=https://zfir.medium.com/
+MEDIUM_FEED_URL=https://medium.com/feed/@zfir
+RSS_2_JSON_API_KEY=<YOUR_API_KEY>
+```
 
-The server reads `.env` if present; real environment variables take precedence.
+- Development (Ember dev server): `npm start` — http://localhost:4200
+- Production-like (built app + Node server): `npm run build && npm run serve`
+  — http://localhost:3000
 
-Server environment variables:
+Get an rss2json API key at [rss2json.com](https://rss2json.com/).
+
+## Environment variables
+
+The Ember app bakes its variables into the bundle at **build** time
+(`PAGE_TITLE`, `ICON_URL`, `GA_ID`, `MEDIUM_URL`, `MEDIUM_FEED_URL`,
+`RSS_2_JSON_API_KEY`, `POSTS_API_URL`). The Node server reads a `.env` file if
+present; real environment variables take precedence.
+
+### App (build time)
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `PAGE_TITLE` | | Site name in the header, titles, and `og:site_name` |
+| `ICON_URL` | | Header icon. A `public/` file or any URL works in the app; for server-side link previews it must be an absolute `http(s)` URL |
+| `GA_ID` | | Optional Google Analytics id |
+| `MEDIUM_URL` | | Link to your Medium profile, e.g. `https://zfir.medium.com/` or `https://medium.com/@zfir` |
+| `MEDIUM_FEED_URL` | | Medium RSS feed, e.g. `https://medium.com/feed/@zfir` (not the same as `MEDIUM_URL`) |
+| `RSS_2_JSON_API_KEY` | | rss2json API key |
+| `POSTS_API_URL` | `/api/posts` | Where the app loads the archive from. Set to `false` to always use rss2json |
+
+### Server
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
@@ -155,8 +100,8 @@ Server environment variables:
 | `ICON_URL` | | Fallback image for link previews (must be an absolute `http(s)` URL to be used) |
 | `MEDIUM_FEED_URL` | | Medium feed to archive, e.g. `https://medium.com/feed/@zfir` |
 | `RSS_2_JSON_API_KEY` | | rss2json API key |
-| `SITE_URL` | from request | Public URL used for canonical/og:url/sitemap, e.g. `https://blog.example.com`. Recommended behind a proxy |
-| `SITE_DESCRIPTION` | `Articles from <PAGE_TITLE>` | Home page description |
+| `SITE_URL` | from request | Public URL for canonical tags, `og:url`, and the sitemap, e.g. `https://blog.example.com`. Set this behind a reverse proxy |
+| `SITE_DESCRIPTION` | `Articles from <PAGE_TITLE>` | Home page description (`Articles from Blog` if `PAGE_TITLE` is also unset) |
 | `PORT` | `3000` | HTTP port |
 | `HOST` | `0.0.0.0` | Bind address |
 | `DIST_DIR` | `dist` | Built Ember app |
@@ -167,7 +112,7 @@ Server environment variables:
 | `IMPORT_TOKEN` | | Bearer token for `POST /api/import`. Unset = endpoint disabled. Generate with `openssl rand -hex 32` |
 | `IMPORT_MAX_BYTES` | `5242880` | Max request body for `/api/import` (5 MB) |
 | `IMPORT_MAX_POSTS` | `100` | Max posts per `/api/import` request |
-| `ARCHIVE_RELOAD_SECONDS` | `10` | How often the server checks the archive file for external changes (e.g. imports) |
+| `ARCHIVE_RELOAD_SECONDS` | `10` | How often the server checks the archive file for external changes |
 | `CACHE_SITEMAP_SECONDS` | `3600` | `Cache-Control` max-age for `/sitemap.xml` (`0` = `no-cache`) |
 | `CACHE_ROBOTS_SECONDS` | `3600` | `Cache-Control` max-age for `/robots.txt` (`0` = `no-cache`) |
 | `CACHE_POSTS_API_SECONDS` | `300` | `Cache-Control` max-age for `/api/posts` (`0` = `no-cache`) |
@@ -175,52 +120,9 @@ Server environment variables:
 | `CACHE_ASSETS_SECONDS` | `31536000` | `Cache-Control` max-age for fingerprinted `/assets/` files (`0` = `no-cache`; otherwise also `immutable`) |
 | `CACHE_REDIRECT_SECONDS` | `3600` | `Cache-Control` max-age for the 301 from a non-canonical post URL (`0` = `no-cache`) |
 
-App (build-time) variable:
+The server process ignores the importer variables below.
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `POSTS_API_URL` | `/api/posts` | Where the app loads the archive from. Set to `false` to always use rss2json |
-
-### Importing older Medium posts
-
-Medium's RSS feed only has the last 10 posts. The importer scrapes Medium post
-pages and either pushes them to a running server (recommended) or writes a
-local archive file.
-
-```
-# push to the server (run on your laptop or in CI)
-export IMPORT_TOKEN=...            # same value as on the server
-npm run import:medium -- --profile --push https://blog.example.com
-npm run import:medium -- --push https://blog.example.com https://medium.com/@you/some-post-1234abcd5678
-
-# write DATA_DIR/posts.json directly (e.g. before the first deploy)
-npm run import:medium -- --profile
-npm run import:medium -- --file urls.txt          # one URL per line
-npm run import:medium -- --dry-run --profile      # preview only
-```
-
-* Query strings such as `?source=...` are stripped. Each post gets the RSS
-  guid `https://medium.com/p/<post-id>`, so it merges with feed items instead of
-  being duplicated. Posts the archive (or server) already has are skipped
-  unless `--force` (with `--push`, `--force` sends `"overwrite": true`).
-* `--profile` reads `https://<user>.medium.com/sitemap/sitemap.xml`; the user
-  defaults to the one in `MEDIUM_FEED_URL`. Posts published only in a
-  publication may not be listed there; pass their URLs directly.
-* `--push <url>` sends posts in batches (`--batch-size`, default 10) to
-  `<url>/api/import`. The token comes from `IMPORT_TOKEN` or `--token`.
-* It extracts title, canonical link, publish date, author, `og:image`,
-  description, tags and the article body (sanitized HTML).
-* Medium is behind a Cloudflare challenge that blocks some networks (it blocks
-  some servers and datacenter IPs). The importer tries a plain request, then
-  headless Chrome (if found, or `CHROME_PATH` / `--chrome`; set
-  `CHROME_NO_SANDBOX=1` where the Chrome sandbox cannot start), then the
-  Wayback Machine. You can also save pages with `--save-html <dir> --dry-run`
-  and import them later with `--html <file>`.
-* Local writes are atomic and never delete posts. A running server picks up
-  changes to its archive file within `ARCHIVE_RELOAD_SECONDS` (default 10).
-
-Importer environment variables (also overridable on the command line where
-noted). Defaults match the previous hardcoded values:
+### Importer
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
@@ -234,14 +136,52 @@ noted). Defaults match the previous hardcoded values:
 | `CHROME_PATH` | first Chrome/Chromium on `PATH` | Chrome/Chromium binary (`--chrome` overrides) |
 | `CHROME_NO_SANDBOX` | | Set to `1` where the Chrome sandbox cannot start (e.g. many CI runners) |
 
-### Import API (`/api/import`)
+## Importing posts
+
+Medium's RSS feed only has the last 10 posts. The importer scrapes Medium
+pages and either pushes them to a running server (recommended) or writes a
+local archive file. Run it by hand or on any schedule you like (cron, CI, a
+timer). Prefer a machine that can reach Medium; some servers and datacenter
+IPs are blocked by Cloudflare.
+
+```
+# push to the server (run on your laptop or in CI)
+export IMPORT_TOKEN=...            # same value as on the server
+npm run import:medium -- --profile --push https://blog.example.com
+npm run import:medium -- --push https://blog.example.com https://medium.com/@you/some-post-1234abcd5678
+
+# write DATA_DIR/posts.json directly (e.g. before the first deploy)
+npm run import:medium -- --profile
+npm run import:medium -- --file urls.txt          # one URL per line
+npm run import:medium -- --dry-run --profile      # preview only
+```
+
+- Query strings such as `?source=...` are stripped. Each post gets the RSS
+  guid `https://medium.com/p/<post-id>`, so it merges with feed items instead
+  of being duplicated. Posts the archive (or server) already has are skipped
+  unless `--force` (with `--push`, `--force` sends `"overwrite": true`).
+- `--profile` reads `https://<user>.medium.com/sitemap/sitemap.xml`; the user
+  defaults to the one in `MEDIUM_FEED_URL`. Posts published only in a
+  publication may not be listed there; pass their URLs directly.
+- `--push <url>` sends posts in batches (`--batch-size`, default 10) to
+  `<url>/api/import`. The token comes from `IMPORT_TOKEN` or `--token`.
+- It extracts title, canonical link, publish date, author, `og:image`,
+  description, tags, and the article body (sanitized HTML).
+- Fetch order: a plain request, then headless Chrome (if found, or
+  `CHROME_PATH` / `--chrome`; set `CHROME_NO_SANDBOX=1` where the Chrome
+  sandbox cannot start), then the Wayback Machine. You can also save pages
+  with `--save-html <dir> --dry-run` and import them later with `--html <file>`.
+- Local writes are atomic and never delete posts. A running server picks up
+  changes to its archive file within `ARCHIVE_RELOAD_SECONDS` (default 10).
+
+## Import API
 
 Open `GET /api/import` in a browser for a usage page (or send
 `Accept: application/json`). It shows whether the endpoint is enabled, but
 never the token or any archived data.
 
-`POST /api/import` needs `IMPORT_TOKEN` to be set on the server; otherwise it
-answers `403`.
+`POST /api/import` needs `IMPORT_TOKEN` on the server; otherwise it answers
+`403`.
 
 ```
 curl -X POST https://blog.example.com/api/import \
@@ -271,13 +211,13 @@ curl -X POST https://blog.example.com/api/import \
 }
 ```
 
-* Required: `title`, `link` (absolute http(s) URL). `guid` is derived from a
+- Required: `title`, `link` (absolute http(s) URL). `guid` is derived from a
   Medium link (`https://medium.com/p/<id>`) when missing, otherwise the link.
-* `pubDate` accepts ISO dates or `YYYY-MM-DD HH:mm:ss` (UTC). HTML in
+- `pubDate` accepts ISO dates or `YYYY-MM-DD HH:mm:ss` (UTC). HTML in
   `description`/`content` is sanitized; `thumbnail` must be an http(s) URL.
-* Existing posts are skipped unless `"overwrite": true`, in which case they are
-  updated when something changed. Nothing is ever deleted.
-* Limits: `IMPORT_MAX_BYTES` (5 MB) per request and `IMPORT_MAX_POSTS` (100)
+- Existing posts are skipped unless `"overwrite": true`, in which case they
+  are updated when something changed. Nothing is ever deleted.
+- Limits: `IMPORT_MAX_BYTES` (5 MB) per request and `IMPORT_MAX_POSTS` (100)
   posts per request.
 
 Response:
@@ -291,14 +231,30 @@ valid posts in the same request are still imported. Errors: `400` invalid JSON
 or body (or no valid posts), `401` missing or wrong token, `403` endpoint
 disabled, `413` body too large.
 
-The importer can also be run by hand or on any schedule you like (cron, CI,
-or a timer):
+The server also serves:
 
-```
-npm run import:medium -- --profile --push <SITE_URL>
-```
+- `/` and `/posts/<slug>-<id>` — app shell with injected SEO tags (unknown
+  posts are a `404` with `noindex`)
+- `/api/posts` — the full archive (newest first; same shape as rss2json items,
+  plus `slug` and `path`). The app uses this and falls back to rss2json if it
+  is unavailable
+- `/sitemap.xml` — home page and every archived post
+- `/robots.txt` — allows everything and points to the sitemap
+- `/healthz` — `{ "status": "ok" }` for health checks
+
+## Deployment
+
+The project is host-agnostic. Any platform that can run Docker or Node works
+(a VM, a PaaS, a home server, and so on). If you put it behind a reverse
+proxy, set `SITE_URL` to the public URL (e.g. `https://blog.example.com`) so
+canonical tags, Open Graph URLs, and the sitemap are correct. Persist
+`DATA_DIR` (or the `/data` volume) so the archive survives restarts.
 
 ### Docker
+
+App variables are baked in at image build time. Those same values are also
+used as runtime defaults for the overlapping server variables, so you only
+need to set them once.
 
 ```
 docker build -t rss-medium-blog-viewer \
@@ -316,40 +272,33 @@ docker run -d -p 3000:3000 \
   rss-medium-blog-viewer
 ```
 
-Build args are also used as runtime defaults, so they only need to be set once.
-The archive is stored in the `/data` volume.
+Expose port `3000` (or set `PORT`), mount a volume at `/data`, and pass any
+other runtime env vars with `-e`.
 
-### Coolify
+### Plain Node
 
-* Create an application from the repository with the **Dockerfile** build pack.
-* Add the variables above. Mark the app variables (`PAGE_TITLE`, `ICON_URL`,
-  `GA_ID`, `MEDIUM_URL`, `MEDIUM_FEED_URL`, `RSS_2_JSON_API_KEY`) as
-  **build variables** too, and set `SITE_URL` to your public URL.
-* Add `IMPORT_TOKEN` as a runtime-only secret (not a build variable) to enable
-  `/api/import`.
-* Set the exposed port to `3000`.
-* Add a persistent storage volume mounted at `/data` so the archive survives
-  redeploys.
-* Imports go through the public URL, so no extra ports or SSH access are needed.
+```
+npm run build
+SITE_URL=https://blog.example.com IMPORT_TOKEN=$(openssl rand -hex 32) npm run serve
+```
+
+`npm run serve` runs `node server/index.js` and listens on `http://0.0.0.0:3000`
+by default. Point `DATA_DIR` at a persistent directory (default: `data/` in
+the project). Keep the same environment variables as in the table above.
 
 ### Static hosting
 
 Upload `dist/` to any static host and serve `index.html` for unknown paths
-(needed for `/posts/...` URLs).
-Everything works, but SEO tags are client-side only, only the last 10 posts
-are listed, and `public/robots.txt` is served as-is (no sitemap).
+(needed for `/posts/...` URLs). Everything works, but SEO tags are client-side
+only, only the last 10 posts are listed, and `public/robots.txt` is served
+as-is (no sitemap).
 
-## Tests
+## Development and testing
 
-* `npm run lint`
-* `npm run test:ember` (Ember app, needs Chrome)
-* `npm run test:server` (Node server, uses the built-in `node:test` runner)
-* `npm test` runs all of the above
-
-## Further Reading / Useful Links
-
-* [ember.js](https://emberjs.com/)
-* [ember-cli](https://cli.emberjs.com/release/)
-* Development Browser Extensions
-  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+- `npm start` — Ember dev server at http://localhost:4200
+- `npm run build` — production build into `dist/`
+- `npm run serve` — Node server (run a build first)
+- `npm run lint`
+- `npm run test:ember` — Ember app (needs Chrome)
+- `npm run test:server` — Node server (`node:test`)
+- `npm test` — lint plus both test suites
