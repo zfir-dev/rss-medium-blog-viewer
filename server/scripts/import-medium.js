@@ -16,7 +16,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { ROOT, getConfig } = require('../config');
+const { ROOT, getConfig, numberFromEnv } = require('../config');
 const { loadEnvFile } = require('../lib/env-file');
 const { Archive } = require('../lib/archive');
 const {
@@ -53,11 +53,11 @@ Options:
   --chrome <path>      Chrome/Chromium binary (default: CHROME_PATH or PATH)
   --no-chrome          Never use headless Chrome
   --no-wayback         Never use the Wayback Machine
-  --delay <ms>         Pause between requests (default 1500)
+  --delay <ms>         Pause between requests (default 1500, or IMPORT_DELAY_MS)
   -h, --help           Show this help
 `;
 
-function parseArgs(argv) {
+function parseArgs(argv, env = process.env) {
   const opts = {
     urls: [],
     files: [],
@@ -73,7 +73,7 @@ function parseArgs(argv) {
     chrome: undefined,
     noChrome: false,
     wayback: true,
-    delay: 1500,
+    delay: numberFromEnv(env.IMPORT_DELAY_MS, 1500),
     help: false,
   };
   for (let i = 0; i < argv.length; i++) {
@@ -151,7 +151,7 @@ function readUrlFile(file) {
     .filter(Boolean);
 }
 
-async function discoverProfileUrls(user, log) {
+async function discoverProfileUrls(user, log, fetchOptions = {}) {
   const name = user.replace(/^@/, '');
   const sitemaps = [
     `https://${name}.medium.com/sitemap/sitemap.xml`,
@@ -159,7 +159,7 @@ async function discoverProfileUrls(user, log) {
   ];
   for (const sitemap of sitemaps) {
     try {
-      const { status, text } = await fetchText(sitemap);
+      const { status, text } = await fetchText(sitemap, fetchOptions);
       const urls = status === 200 ? parseSitemapUrls(text) : [];
       log(`sitemap ${sitemap}: HTTP ${status}, ${urls.length} post URLs`);
       if (urls.length) {
@@ -193,6 +193,14 @@ async function main(argv) {
     return 0;
   }
   const config = getConfig();
+  const fetchOptions = {
+    timeoutMs: config.mediumFetchTimeoutMs,
+    chromeTimeoutMs: config.chromeTimeoutMs,
+    virtualTimeBudgetMs: config.chromeVirtualTimeBudgetMs,
+  };
+  if (config.mediumUserAgent) {
+    fetchOptions.userAgent = config.mediumUserAgent;
+  }
   const archivePath = opts.archive
     ? path.resolve(opts.archive)
     : config.archivePath;
@@ -211,7 +219,7 @@ async function main(argv) {
       );
     }
     log(`Discovering posts for ${user}...`);
-    urls.push(...(await discoverProfileUrls(user, log)));
+    urls.push(...(await discoverProfileUrls(user, log, fetchOptions)));
   }
 
   // Normalize and dedupe by Medium post id.
@@ -243,7 +251,9 @@ async function main(argv) {
   let existingIds;
   if (opts.push) {
     try {
-      existingIds = await fetchRemoteIds(opts.push);
+      existingIds = await fetchRemoteIds(opts.push, {
+        timeoutMs: config.importRemoteIdsTimeoutMs,
+      });
       log(`Server ${opts.push} has ${existingIds.size} posts`);
     } catch (error) {
       console.warn(
@@ -316,6 +326,7 @@ async function main(argv) {
         chromePath,
         wayback: opts.wayback,
         log,
+        ...fetchOptions,
       });
       if (opts.saveHtml) {
         fs.writeFileSync(path.join(opts.saveHtml, `${id}.html`), html);
@@ -339,6 +350,7 @@ async function main(argv) {
         overwrite: opts.force,
         batchSize: opts.batchSize,
         log,
+        timeoutMs: config.importPushTimeoutMs,
       });
       log(
         `Server: ${result.added} added, ${result.updated} updated, ${result.skipped} skipped, ${result.invalid.length} invalid (${result.total} total)`,

@@ -8,11 +8,11 @@ function endpoint(serverUrl, pathname) {
 /** Ids of posts already on the server (from GET /api/posts). */
 async function fetchRemoteIds(
   serverUrl,
-  { fetchImpl = globalThis.fetch } = {},
+  { fetchImpl = globalThis.fetch, timeoutMs = 30000 } = {},
 ) {
   const response = await fetchImpl(endpoint(serverUrl, 'api/posts'), {
     headers: { accept: 'application/json' },
-    signal: AbortSignal.timeout(30000),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   if (!response.ok) {
     throw new Error(`GET /api/posts failed with status ${response.status}`);
@@ -63,6 +63,7 @@ async function pushPosts(
     batchSize = 10,
     fetchImpl = globalThis.fetch,
     log = () => {},
+    timeoutMs = 60000,
   } = {},
 ) {
   if (!token) {
@@ -80,7 +81,7 @@ async function pushPosts(
         accept: 'application/json',
       },
       body: JSON.stringify({ overwrite, posts: batches[i] }),
-      signal: AbortSignal.timeout(60000),
+      signal: AbortSignal.timeout(timeoutMs),
     });
     let data = null;
     try {

@@ -168,6 +168,12 @@ Server environment variables:
 | `IMPORT_MAX_BYTES` | `5242880` | Max request body for `/api/import` (5 MB) |
 | `IMPORT_MAX_POSTS` | `100` | Max posts per `/api/import` request |
 | `ARCHIVE_RELOAD_SECONDS` | `10` | How often the server checks the archive file for external changes (e.g. imports) |
+| `CACHE_SITEMAP_SECONDS` | `3600` | `Cache-Control` max-age for `/sitemap.xml` (`0` = `no-cache`) |
+| `CACHE_ROBOTS_SECONDS` | `3600` | `Cache-Control` max-age for `/robots.txt` (`0` = `no-cache`) |
+| `CACHE_POSTS_API_SECONDS` | `300` | `Cache-Control` max-age for `/api/posts` (`0` = `no-cache`) |
+| `CACHE_STATIC_SECONDS` | `3600` | `Cache-Control` max-age for non-fingerprinted static files (`0` = `no-cache`) |
+| `CACHE_ASSETS_SECONDS` | `31536000` | `Cache-Control` max-age for fingerprinted `/assets/` files (`0` = `no-cache`; otherwise also `immutable`) |
+| `CACHE_REDIRECT_SECONDS` | `3600` | `Cache-Control` max-age for the 301 from a non-canonical post URL (`0` = `no-cache`) |
 
 App (build-time) variable:
 
@@ -212,6 +218,21 @@ npm run import:medium -- --dry-run --profile      # preview only
   and import them later with `--html <file>`.
 * Local writes are atomic and never delete posts. A running server picks up
   changes to its archive file within `ARCHIVE_RELOAD_SECONDS` (default 10).
+
+Importer environment variables (also overridable on the command line where
+noted). Defaults match the previous hardcoded values:
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `IMPORT_DELAY_MS` | `1500` | Pause between Medium fetches (`--delay` overrides) |
+| `MEDIUM_FETCH_TIMEOUT_MS` | `20000` | Timeout for each plain Medium / sitemap / Wayback request |
+| `CHROME_TIMEOUT_MS` | `60000` | Timeout for a headless Chrome render |
+| `CHROME_VIRTUAL_TIME_BUDGET_MS` | `15000` | Chrome `--virtual-time-budget` |
+| `IMPORT_PUSH_TIMEOUT_MS` | `60000` | Timeout for each `POST /api/import` batch |
+| `IMPORT_REMOTE_IDS_TIMEOUT_MS` | `30000` | Timeout for `GET /api/posts` when deciding what to skip |
+| `MEDIUM_USER_AGENT` | Chrome 130 desktop UA | `User-Agent` for Medium requests and Chrome |
+| `CHROME_PATH` | first Chrome/Chromium on `PATH` | Chrome/Chromium binary (`--chrome` overrides) |
+| `CHROME_NO_SANDBOX` | | Set to `1` where the Chrome sandbox cannot start (e.g. many CI runners) |
 
 ### Import API (`/api/import`)
 

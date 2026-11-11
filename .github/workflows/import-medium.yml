@@ -8,6 +8,10 @@ name: Import Medium posts
 #   vars.SITE_URL          public URL of the server, e.g. https://blog.example.com
 #   vars.MEDIUM_FEED_URL   e.g. https://medium.com/feed/@zfir (or vars.MEDIUM_USER=@zfir)
 # The job skips itself when IMPORT_TOKEN or SITE_URL is missing (e.g. on forks).
+# Optional importer tunables (same names and defaults as in the README):
+#   MEDIUM_FETCH_TIMEOUT_MS, CHROME_TIMEOUT_MS, CHROME_VIRTUAL_TIME_BUDGET_MS,
+#   IMPORT_PUSH_TIMEOUT_MS, IMPORT_REMOTE_IDS_TIMEOUT_MS, IMPORT_DELAY_MS,
+#   MEDIUM_USER_AGENT, CHROME_PATH
 
 on:
   schedule:

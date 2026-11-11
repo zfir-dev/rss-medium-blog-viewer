@@ -18,6 +18,7 @@ const {
   renderHelpHtml,
 } = require('./lib/import-api');
 const { parsePostRef, getPostPath } = require('./lib/slug');
+const { cacheControl } = require('./config');
 
 const SAFE_HOST = /^[A-Za-z0-9.-]+(:\d{1,5})?$|^\[[0-9A-Fa-f:.]+\](:\d{1,5})?$/;
 
@@ -281,7 +282,7 @@ function createHandler({ config, archive, loadIndex }) {
         });
         sendBuffer(req, res, 200, body, {
           'Content-Type': 'application/json; charset=utf-8',
-          'Cache-Control': 'public, max-age=300',
+          'Cache-Control': cacheControl(config.cachePostsApiSeconds ?? 300),
         });
         return;
       }
@@ -294,7 +295,7 @@ function createHandler({ config, archive, loadIndex }) {
           renderSitemap(archive.list(), getSiteUrl(req, config)),
           {
             'Content-Type': 'application/xml; charset=utf-8',
-            'Cache-Control': 'public, max-age=3600',
+            'Cache-Control': cacheControl(config.cacheSitemapSeconds ?? 3600),
           },
         );
         return;
@@ -303,7 +304,7 @@ function createHandler({ config, archive, loadIndex }) {
       if (pathname === '/robots.txt') {
         sendBuffer(req, res, 200, renderRobots(getSiteUrl(req, config)), {
           'Content-Type': 'text/plain; charset=utf-8',
-          'Cache-Control': 'public, max-age=3600',
+          'Cache-Control': cacheControl(config.cacheRobotsSeconds ?? 3600),
         });
         return;
       }
@@ -331,7 +332,7 @@ function createHandler({ config, archive, loadIndex }) {
         if (pathname !== canonicalPath) {
           res.writeHead(301, {
             Location: `${canonicalPath}${url.search}`,
-            'Cache-Control': 'public, max-age=3600',
+            'Cache-Control': cacheControl(config.cacheRedirectSeconds ?? 3600),
           });
           res.end();
           return;
@@ -342,7 +343,10 @@ function createHandler({ config, archive, loadIndex }) {
 
       const file = resolveStaticFile(config.distDir, pathname);
       if (file) {
-        sendStaticFile(req, res, file, config.distDir);
+        sendStaticFile(req, res, file, config.distDir, {
+          cacheAssetsSeconds: config.cacheAssetsSeconds ?? 31536000,
+          cacheStaticSeconds: config.cacheStaticSeconds ?? 3600,
+        });
         return;
       }
 

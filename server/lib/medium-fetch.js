@@ -47,12 +47,15 @@ function findChrome(explicit = process.env.CHROME_PATH) {
   return null;
 }
 
-async function fetchText(url, { timeoutMs = 20000 } = {}) {
+async function fetchText(
+  url,
+  { timeoutMs = 20000, userAgent = BROWSER_UA } = {},
+) {
   const response = await fetch(url, {
     redirect: 'follow',
     signal: AbortSignal.timeout(timeoutMs),
     headers: {
-      'user-agent': BROWSER_UA,
+      'user-agent': userAgent,
       accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       'accept-language': 'en-US,en;q=0.9',
     },
@@ -61,13 +64,21 @@ async function fetchText(url, { timeoutMs = 20000 } = {}) {
 }
 
 /** Render a page in headless Chrome and return the DOM (passes JS challenges). */
-function fetchWithChrome(url, chromePath, { timeoutMs = 60000 } = {}) {
+function fetchWithChrome(
+  url,
+  chromePath,
+  {
+    timeoutMs = 60000,
+    virtualTimeBudgetMs = 15000,
+    userAgent = BROWSER_UA,
+  } = {},
+) {
   const args = [
     '--headless=new',
     '--disable-gpu',
     '--disable-dev-shm-usage',
-    '--virtual-time-budget=15000',
-    `--user-agent=${BROWSER_UA}`,
+    `--virtual-time-budget=${virtualTimeBudgetMs}`,
+    `--user-agent=${userAgent}`,
     '--dump-dom',
     url,
   ];
@@ -143,7 +154,10 @@ async function fetchMediumPost(url, options = {}) {
   if (chromePath) {
     try {
       log(`  trying headless Chrome (${chromePath})`);
-      const html = await fetchWithChrome(url, chromePath, options);
+      const html = await fetchWithChrome(url, chromePath, {
+        ...options,
+        timeoutMs: options.chromeTimeoutMs ?? options.timeoutMs ?? 60000,
+      });
       const post = parseMediumPost(html, url);
       if (post) {
         return { post, html, via: 'chrome' };

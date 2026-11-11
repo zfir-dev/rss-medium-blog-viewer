@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
+const { cacheControl } = require('../config');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -115,22 +116,22 @@ function cachedGzip(key, payload) {
   return gz;
 }
 
-function sendStaticFile(req, res, { filePath, stat }, rootDir) {
+function sendStaticFile(req, res, { filePath, stat }, rootDir, cache = {}) {
   const relative = path.relative(rootDir, filePath).split(path.sep).join('/');
   // Ember fingerprints everything in assets/, so it can be cached forever.
-  const cacheControl = relative.startsWith('assets/')
-    ? 'public, max-age=31536000, immutable'
-    : 'public, max-age=3600';
+  const cacheHeader = relative.startsWith('assets/')
+    ? cacheControl(cache.cacheAssetsSeconds ?? 31536000, { immutable: true })
+    : cacheControl(cache.cacheStaticSeconds ?? 3600);
   const etag = `W/"${stat.size.toString(16)}-${stat.mtimeMs.toString(16)}"`;
   if (req.headers['if-none-match'] === etag) {
-    res.writeHead(304, { ETag: etag, 'Cache-Control': cacheControl });
+    res.writeHead(304, { ETag: etag, 'Cache-Control': cacheHeader });
     res.end();
     return;
   }
   const body = fs.readFileSync(filePath);
   sendBuffer(req, res, 200, body, {
     'Content-Type': contentType(filePath),
-    'Cache-Control': cacheControl,
+    'Cache-Control': cacheHeader,
     ETag: etag,
     'X-Gzip-Cache-Key': `${filePath}:${stat.mtimeMs}`,
   });

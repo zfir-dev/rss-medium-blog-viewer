@@ -9,7 +9,7 @@ const path = require('path');
 const { createHandler } = require('../app');
 const { Archive } = require('../lib/archive');
 
-function setup() {
+function setup(configOverrides = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'app-test-'));
   const dist = path.join(dir, 'dist');
   fs.mkdirSync(path.join(dist, 'assets'), { recursive: true });
@@ -18,6 +18,7 @@ function setup() {
     '<html><head><!-- seo:start --><title>x</title><!-- seo:end --></head><body></body></html>',
   );
   fs.writeFileSync(path.join(dist, 'assets', 'app.js'), 'console.log(1)');
+  fs.writeFileSync(path.join(dist, 'favicon.ico'), 'ico');
   fs.writeFileSync(path.join(dir, 'secret.txt'), 'secret');
 
   const archive = new Archive(path.join(dir, 'data', 'posts.json'));
@@ -35,6 +36,7 @@ function setup() {
     siteUrl: 'https://blog.example.com',
     pageTitle: 'My Blog',
     iconUrl: 'https://img/icon.png',
+    ...configOverrides,
   };
   const server = http.createServer(createHandler({ config, archive }));
   return new Promise((resolve) => {
@@ -144,5 +146,80 @@ test('HTTP routes', async (t) => {
     assert.equal(spa.status, 200);
     assert.match(await spa.text(), /<title>My Blog<\/title>/);
     assert.equal((await fetch(`${base}/`, { method: 'POST' })).status, 405);
+  });
+});
+
+test('cache-control headers are configurable', async (t) => {
+  await t.test('defaults keep the current max-age values', async (t) => {
+    const { base, server, dir } = await setup();
+    t.after(() => {
+      server.close();
+      fs.rmSync(dir, { recursive: true, force: true });
+    });
+    assert.equal(
+      (await fetch(`${base}/sitemap.xml`)).headers.get('cache-control'),
+      'public, max-age=3600',
+    );
+    assert.equal(
+      (await fetch(`${base}/robots.txt`)).headers.get('cache-control'),
+      'public, max-age=3600',
+    );
+    assert.equal(
+      (await fetch(`${base}/api/posts`)).headers.get('cache-control'),
+      'public, max-age=300',
+    );
+    const redirect = await fetch(`${base}/posts/0123456789ab`, {
+      redirect: 'manual',
+    });
+    assert.equal(redirect.status, 301);
+    assert.equal(redirect.headers.get('cache-control'), 'public, max-age=3600');
+    assert.equal(
+      (await fetch(`${base}/assets/app.js`)).headers.get('cache-control'),
+      'public, max-age=31536000, immutable',
+    );
+    assert.equal(
+      (await fetch(`${base}/favicon.ico`)).headers.get('cache-control'),
+      'public, max-age=3600',
+    );
+  });
+
+  await t.test('cache 0 sends no-cache', async (t) => {
+    const { base, server, dir } = await setup({
+      cacheSitemapSeconds: 0,
+      cacheRobotsSeconds: 0,
+      cachePostsApiSeconds: 0,
+      cacheRedirectSeconds: 0,
+      cacheAssetsSeconds: 0,
+      cacheStaticSeconds: 0,
+    });
+    t.after(() => {
+      server.close();
+      fs.rmSync(dir, { recursive: true, force: true });
+    });
+    assert.equal(
+      (await fetch(`${base}/sitemap.xml`)).headers.get('cache-control'),
+      'no-cache',
+    );
+    assert.equal(
+      (await fetch(`${base}/robots.txt`)).headers.get('cache-control'),
+      'no-cache',
+    );
+    assert.equal(
+      (await fetch(`${base}/api/posts`)).headers.get('cache-control'),
+      'no-cache',
+    );
+    const redirect = await fetch(`${base}/posts/0123456789ab`, {
+      redirect: 'manual',
+    });
+    assert.equal(redirect.status, 301);
+    assert.equal(redirect.headers.get('cache-control'), 'no-cache');
+    assert.equal(
+      (await fetch(`${base}/assets/app.js`)).headers.get('cache-control'),
+      'no-cache',
+    );
+    assert.equal(
+      (await fetch(`${base}/favicon.ico`)).headers.get('cache-control'),
+      'no-cache',
+    );
   });
 });
