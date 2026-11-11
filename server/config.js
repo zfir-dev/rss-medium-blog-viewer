@@ -74,7 +74,6 @@ function getConfig(env = process.env) {
       env.IMPORT_REMOTE_IDS_TIMEOUT_MS,
       30000,
     ),
-    importDelayMs: numberFromEnv(env.IMPORT_DELAY_MS, 1500),
     mediumUserAgent: env.MEDIUM_USER_AGENT || '',
   };
 }

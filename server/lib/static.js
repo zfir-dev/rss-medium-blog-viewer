@@ -137,4 +137,4 @@ function sendStaticFile(req, res, { filePath, stat }, rootDir, cache = {}) {
   });
 }
 
-module.exports = { resolveStaticFile, sendStaticFile, sendBuffer, contentType };
+module.exports = { resolveStaticFile, sendStaticFile, sendBuffer };

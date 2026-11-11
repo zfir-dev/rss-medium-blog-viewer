@@ -373,4 +373,4 @@ function createHandler({ config, archive, loadIndex }) {
   };
 }
 
-module.exports = { createHandler, getSiteUrl, createIndexLoader };
+module.exports = { createHandler };

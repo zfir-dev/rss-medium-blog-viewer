@@ -176,5 +176,4 @@ module.exports = {
   toIsoDate,
   getPostDescription,
   getModifiedDate,
-  firstImageSrc,
 };

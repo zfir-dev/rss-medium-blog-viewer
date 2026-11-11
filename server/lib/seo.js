@@ -183,6 +183,4 @@ module.exports = {
   injectSeo,
   postUrl,
   siteBase,
-  SEO_START,
-  SEO_END,
 };

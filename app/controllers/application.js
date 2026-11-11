@@ -14,7 +14,7 @@ import {
  * URL of the posts archive served by the bundled Node server (server/).
  * Set POSTS_API_URL to override, or to "false" to disable (static hosting).
  */
-export function getPostsApiUrl() {
+function getPostsApiUrl() {
   const value = ENV.posts_api_url;
   if (value === undefined || value === null || value === '') {
     return `${ENV.rootURL}api/posts`;

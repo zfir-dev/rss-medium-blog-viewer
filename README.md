@@ -88,7 +88,7 @@ There are two ways to deploy the app:
                  │  - merges into the archive   │        │ npm run import:medium      │
                  │  - injects SEO tags          │        │  --profile --push <site>   │
                  │  - /api/posts, /sitemap.xml  │        │ on your laptop or a        │
-                 │  - serves dist/ (Ember app)  │        │ scheduled GitHub Action    │
+                 │  - serves dist/ (Ember app)  │        │ any schedule you like      │
                  └──────────────┬───────────────┘        └──────────────▲─────────────┘
                                 │                                       │ scrapes
                  /data/posts.json (volume, source of truth)      Medium post pages
@@ -291,23 +291,12 @@ valid posts in the same request are still imported. Errors: `400` invalid JSON
 or body (or no valid posts), `401` missing or wrong token, `403` endpoint
 disabled, `413` body too large.
 
-### Scheduled import with GitHub Actions
+The importer can also be run by hand or on any schedule you like (cron, CI,
+or a timer):
 
-`.github/workflows/import-medium.yml` runs the importer every 12 hours (and on
-demand from the Actions tab) and pushes to your server. Configure it in
-**Settings → Secrets and variables → Actions**:
-
-* Secret `IMPORT_TOKEN`: same value as the server's `IMPORT_TOKEN`.
-* Variable `SITE_URL`: your public URL, e.g. `https://blog.example.com`.
-* Variable `MEDIUM_FEED_URL` (e.g. `https://medium.com/feed/@zfir`) or
-  `MEDIUM_USER` (e.g. `@zfir`).
-
-The job skips itself when these are missing (e.g. on forks). The manual run
-accepts extra post URLs (for publication posts missing from the sitemap) and a
-`force` option. GitHub runner IPs may get Medium's Cloudflare challenge; the
-importer then falls back to the headless Chrome that ships with
-`ubuntu-latest`, then the Wayback Machine. If a run still fails to scrape,
-run the importer from your own machine with `--push`.
+```
+npm run import:medium -- --profile --push <SITE_URL>
+```
 
 ### Docker
 

@@ -198,8 +198,5 @@ async function fetchMediumPost(url, options = {}) {
 module.exports = {
   fetchMediumPost,
   fetchText,
-  fetchWithChrome,
-  fetchFromWayback,
   findChrome,
-  BROWSER_UA,
 };

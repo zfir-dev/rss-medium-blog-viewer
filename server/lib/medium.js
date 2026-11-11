@@ -404,7 +404,6 @@ module.exports = {
   mediumGuid,
   isChallengePage,
   sanitizeHtml,
-  extractContent,
   parseMediumPost,
   parseSitemapUrls,
   getFeedUser,

@@ -39,7 +39,6 @@ test('getConfig defaults', () => {
   assert.equal(config.chromeVirtualTimeBudgetMs, 15000);
   assert.equal(config.importPushTimeoutMs, 60000);
   assert.equal(config.importRemoteIdsTimeoutMs, 30000);
-  assert.equal(config.importDelayMs, 1500);
   assert.equal(config.mediumUserAgent, '');
   assert.equal(config.port, 3000);
   assert.ok(config.archivePath.startsWith(path.resolve(ROOT, 'data')));
@@ -58,7 +57,6 @@ test('getConfig reads cache and importer env vars', () => {
     CHROME_VIRTUAL_TIME_BUDGET_MS: '5000',
     IMPORT_PUSH_TIMEOUT_MS: '12000',
     IMPORT_REMOTE_IDS_TIMEOUT_MS: '9000',
-    IMPORT_DELAY_MS: '2500',
     MEDIUM_USER_AGENT: 'TestUA/1.0',
     CACHE_SITEMAP_SECONDS_INVALID_IGNORED: 'x',
   });
@@ -73,15 +71,14 @@ test('getConfig reads cache and importer env vars', () => {
   assert.equal(config.chromeVirtualTimeBudgetMs, 5000);
   assert.equal(config.importPushTimeoutMs, 12000);
   assert.equal(config.importRemoteIdsTimeoutMs, 9000);
-  assert.equal(config.importDelayMs, 2500);
   assert.equal(config.mediumUserAgent, 'TestUA/1.0');
 });
 
 test('getConfig falls back when an env value is invalid', () => {
   const config = getConfig({
     CACHE_SITEMAP_SECONDS: 'nope',
-    IMPORT_DELAY_MS: '',
+    IMPORT_PUSH_TIMEOUT_MS: '',
   });
   assert.equal(config.cacheSitemapSeconds, 3600);
-  assert.equal(config.importDelayMs, 1500);
+  assert.equal(config.importPushTimeoutMs, 60000);
 });
