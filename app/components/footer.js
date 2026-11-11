@@ -1,10 +1,13 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import ENV from 'rss-medium-blog-viewer/config/environment';
 
 export default class FooterComponent extends Component {
   @tracked currentYear = new Date().getFullYear();
   @tracked touchStartX = 0;
+  // absolute so images also load on /posts/... URLs
+  rootURL = ENV.rootURL;
 
   get previousItem() {
     return this.args.items[parseInt(this.args.selected) - 1];

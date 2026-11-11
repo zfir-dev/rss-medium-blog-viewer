@@ -6,21 +6,15 @@ import { hbs } from 'ember-cli-htmlbars';
 module('Integration | Component | blog', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function (assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
+  test('it renders the selected post', async function (assert) {
+    this.items = [{ title: 'Hello', content: '<p>Body text</p>' }];
+    this.handleBack = () => {};
 
-    await render(hbs`<Blog />`);
+    await render(
+      hbs`<Blog @items={{this.items}} @selected="0" @handleBack={{this.handleBack}} />`,
+    );
 
-    assert.dom().hasText('');
-
-    // Template block usage:
-    await render(hbs`
-      <Blog>
-        template block text
-      </Blog>
-    `);
-
-    assert.dom().hasText('template block text');
+    assert.dom('h1.title').hasText('Hello');
+    assert.dom('.blog p').hasText('Body text');
   });
 });

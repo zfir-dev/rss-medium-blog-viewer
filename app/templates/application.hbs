@@ -1,12 +1,12 @@
-{{page-title this.pageTitle}}
+{{page-title this.documentTitle}}
 
 <Header @pageTitle={{this.pageTitle}} @handleBack={{this.handleBack}} @items={{this.items}}
     @selected={{this.selected}} />
-<div class="m-md-3 m-1">
+<div class="m-md-3 m-1" {{on-insert this.updateSeo}}>
     {{#if this.selected}}
     <Blog @handleBack={{this.handleBack}} @items={{this.items}} @selected={{this.selected}} />
     {{else}}
-    <Blogs @items={{this.items}} @handleSelected={{this.handleSelected}} />
+    <Blogs @items={{this.items}} @handleSelected={{this.handleSelected}} @getPostUrl={{this.getPostUrl}} />
     {{/if}}
 </div>
 <Footer @pageTitle={{this.pageTitle}} @handleBack={{this.handleBack}} @items={{this.items}} @selected={{this.selected}}

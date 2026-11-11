@@ -5,6 +5,9 @@
 # dependencies
 /node_modules/
 
+# post archive written by the Node server (server/)
+/data/
+
 # misc
 /.env*
 /.pnp*
