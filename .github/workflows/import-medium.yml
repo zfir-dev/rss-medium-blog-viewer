@@ -5,7 +5,7 @@ name: Import Medium posts
 #
 # Setup (repository Settings -> Secrets and variables -> Actions):
 #   secrets.IMPORT_TOKEN   same value as IMPORT_TOKEN on the server
-#   vars.SITE_URL          public URL of the server, e.g. https://blog.zfir.dev
+#   vars.SITE_URL          public URL of the server, e.g. https://blog.example.com
 #   vars.MEDIUM_FEED_URL   e.g. https://medium.com/feed/@zfir (or vars.MEDIUM_USER=@zfir)
 # The job skips itself when IMPORT_TOKEN or SITE_URL is missing (e.g. on forks).
 

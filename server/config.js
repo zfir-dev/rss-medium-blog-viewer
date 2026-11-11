@@ -21,7 +21,7 @@ function getConfig(env = process.env) {
     dataDir,
     // Relative paths are resolved inside DATA_DIR.
     archivePath: path.resolve(dataDir, env.ARCHIVE_FILE || 'posts.json'),
-    // Public URL of the site, e.g. https://blog.zfir.dev. When unset it is
+    // Public URL of the site, e.g. https://blog.example.com. When unset it is
     // derived from the request (Host / X-Forwarded-* headers).
     siteUrl: env.SITE_URL ? env.SITE_URL.replace(/\/+$/, '') : '',
     pageTitle: env.PAGE_TITLE || '',

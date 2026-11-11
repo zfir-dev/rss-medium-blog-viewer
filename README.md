@@ -155,7 +155,7 @@ Server environment variables:
 | `ICON_URL` | | Fallback image for link previews (must be an absolute `http(s)` URL to be used) |
 | `MEDIUM_FEED_URL` | | Medium feed to archive, e.g. `https://medium.com/feed/@zfir` |
 | `RSS_2_JSON_API_KEY` | | rss2json API key |
-| `SITE_URL` | from request | Public URL used for canonical/og:url/sitemap, e.g. `https://blog.zfir.dev`. Recommended behind a proxy |
+| `SITE_URL` | from request | Public URL used for canonical/og:url/sitemap, e.g. `https://blog.example.com`. Recommended behind a proxy |
 | `SITE_DESCRIPTION` | `Articles from <PAGE_TITLE>` | Home page description |
 | `PORT` | `3000` | HTTP port |
 | `HOST` | `0.0.0.0` | Bind address |
@@ -184,8 +184,8 @@ local archive file.
 ```
 # push to the server (run on your laptop or in CI)
 export IMPORT_TOKEN=...            # same value as on the server
-npm run import:medium -- --profile --push https://blog.zfir.dev
-npm run import:medium -- --push https://blog.zfir.dev https://medium.com/@you/some-post-1234abcd5678
+npm run import:medium -- --profile --push https://blog.example.com
+npm run import:medium -- --push https://blog.example.com https://medium.com/@you/some-post-1234abcd5678
 
 # write DATA_DIR/posts.json directly (e.g. before the first deploy)
 npm run import:medium -- --profile
@@ -223,7 +223,7 @@ never the token or any archived data.
 answers `403`.
 
 ```
-curl -X POST https://blog.zfir.dev/api/import \
+curl -X POST https://blog.example.com/api/import \
   -H "Authorization: Bearer $IMPORT_TOKEN" \
   -H "Content-Type: application/json" \
   --data @posts.json
@@ -277,7 +277,7 @@ demand from the Actions tab) and pushes to your server. Configure it in
 **Settings → Secrets and variables → Actions**:
 
 * Secret `IMPORT_TOKEN`: same value as the server's `IMPORT_TOKEN`.
-* Variable `SITE_URL`: your public URL, e.g. `https://blog.zfir.dev`.
+* Variable `SITE_URL`: your public URL, e.g. `https://blog.example.com`.
 * Variable `MEDIUM_FEED_URL` (e.g. `https://medium.com/feed/@zfir`) or
   `MEDIUM_USER` (e.g. `@zfir`).
 
