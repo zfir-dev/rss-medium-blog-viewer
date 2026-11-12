@@ -24,11 +24,12 @@ module.exports = function (environment) {
     medium_url: process.env.MEDIUM_URL,
     medium_feed_url: process.env.MEDIUM_FEED_URL,
     rss_2_json_api_key: process.env.RSS_2_JSON_API_KEY,
+    posts_api_url: process.env.POSTS_API_URL,
   };
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
-    // ENV.APP.LOG_ACTIVE_GENERATION = true;<<<<<<<
+    // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;

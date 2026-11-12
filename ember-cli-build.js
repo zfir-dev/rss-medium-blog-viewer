@@ -21,6 +21,7 @@ module.exports = function (defaults) {
         'MEDIUM_URL',
         'MEDIUM_FEED_URL',
         'RSS_2_JSON_API_KEY',
+        'POSTS_API_URL',
       ],
     },
   });

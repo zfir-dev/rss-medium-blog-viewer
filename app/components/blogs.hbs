@@ -21,7 +21,7 @@
                     <p class="card-text">
                         Published on {{this.getFormattedDate item.pubDate}}
                     </p>
-                    <a href="#" class="btn btn-primary mt-auto" {{on "click" (fn this.select item)}}
+                    <a href={{@getPostUrl item}} class="btn btn-primary mt-auto" {{on "click" (fn this.select item)}}
                         aria-label={{item.title}}>Read More</a>
                 </div>
             </div>

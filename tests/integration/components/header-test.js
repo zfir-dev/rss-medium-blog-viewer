@@ -6,21 +6,9 @@ import { hbs } from 'ember-cli-htmlbars';
 module('Integration | Component | header', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function (assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
+  test('it renders the Medium link', async function (assert) {
+    await render(hbs`<Header @pageTitle="My Blog" @items={{(array)}} />`);
 
-    await render(hbs`<Header />`);
-
-    assert.dom().hasText('');
-
-    // Template block usage:
-    await render(hbs`
-      <Header>
-        template block text
-      </Header>
-    `);
-
-    assert.dom().hasText('template block text');
+    assert.dom('header a.btn').hasText('View Medium');
   });
 });

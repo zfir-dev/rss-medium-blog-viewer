@@ -5,6 +5,7 @@
 /dist/
 
 # misc
+/data/
 /coverage/
 !.*
 .*/
