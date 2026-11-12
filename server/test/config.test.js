@@ -2,8 +2,11 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { getConfig, cacheControl, numberFromEnv, ROOT } = require('../config');
+const { normalizeEnvValue, loadEnvFile } = require('../lib/env-file');
 
 test('numberFromEnv', () => {
   assert.equal(numberFromEnv(undefined, 10), 10);
@@ -81,4 +84,40 @@ test('getConfig falls back when an env value is invalid', () => {
   });
   assert.equal(config.cacheSitemapSeconds, 3600);
   assert.equal(config.importPushTimeoutMs, 60000);
+});
+
+test('normalizeEnvValue unescapes apostrophes and strips quotes', () => {
+  const escaped = 'Zafir\\' + "'s Blog";
+  assert.equal(normalizeEnvValue(escaped), "Zafir's Blog");
+  assert.equal(normalizeEnvValue("Zafir's Blog"), "Zafir's Blog");
+  assert.equal(normalizeEnvValue("'" + escaped + "'"), "Zafir's Blog");
+  assert.equal(normalizeEnvValue('"' + escaped + '"'), "Zafir's Blog");
+  assert.equal(normalizeEnvValue(''), '');
+  assert.equal(normalizeEnvValue(undefined, 'Blog'), 'Blog');
+});
+
+test('getConfig unescapes PAGE_TITLE from the environment', () => {
+  const config = getConfig({ PAGE_TITLE: 'Zafir\\' + "'s Blog" });
+  assert.equal(config.pageTitle, "Zafir's Blog");
+});
+
+test('loadEnvFile unescapes quoted and unquoted values', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'env-file-'));
+  const file = path.join(dir, '.env');
+  const escapedApostrophe = '\\' + "'";
+  fs.writeFileSync(
+    file,
+    [
+      `PAGE_TITLE=Zafir${escapedApostrophe}s Blog`,
+      `SITE_DESCRIPTION='A site${escapedApostrophe}s description'`,
+      'ICON_URL="https://example.com/icon.png"',
+      '',
+    ].join('\n'),
+  );
+  const env = {};
+  assert.equal(loadEnvFile(file, env), true);
+  assert.equal(env.PAGE_TITLE, "Zafir's Blog");
+  assert.equal(env.SITE_DESCRIPTION, "A site's description");
+  assert.equal(env.ICON_URL, 'https://example.com/icon.png');
+  fs.rmSync(dir, { recursive: true, force: true });
 });

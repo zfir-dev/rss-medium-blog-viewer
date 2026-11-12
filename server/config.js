@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const { normalizeEnvValue } = require('./lib/env-file');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -26,19 +27,19 @@ function getConfig(env = process.env) {
   const dataDir = path.resolve(ROOT, env.DATA_DIR || 'data');
   return {
     port: numberFromEnv(env.PORT, 3000),
-    host: env.HOST || '0.0.0.0',
+    host: normalizeEnvValue(env.HOST, '0.0.0.0'),
     distDir: path.resolve(ROOT, env.DIST_DIR || 'dist'),
     dataDir,
     // Relative paths are resolved inside DATA_DIR.
     archivePath: path.resolve(dataDir, env.ARCHIVE_FILE || 'posts.json'),
     // Public URL of the site, e.g. https://blog.example.com. When unset it is
     // derived from the request (Host / X-Forwarded-* headers).
-    siteUrl: env.SITE_URL ? env.SITE_URL.replace(/\/+$/, '') : '',
-    pageTitle: env.PAGE_TITLE || '',
-    siteDescription: env.SITE_DESCRIPTION || '',
-    iconUrl: env.ICON_URL || '',
-    feedUrl: env.MEDIUM_FEED_URL || '',
-    rss2JsonApiKey: env.RSS_2_JSON_API_KEY || '',
+    siteUrl: normalizeEnvValue(env.SITE_URL).replace(/\/+$/, ''),
+    pageTitle: normalizeEnvValue(env.PAGE_TITLE),
+    siteDescription: normalizeEnvValue(env.SITE_DESCRIPTION),
+    iconUrl: normalizeEnvValue(env.ICON_URL),
+    feedUrl: normalizeEnvValue(env.MEDIUM_FEED_URL),
+    rss2JsonApiKey: normalizeEnvValue(env.RSS_2_JSON_API_KEY),
     // Minutes between feed refreshes. 0 disables periodic refresh (startup
     // refresh still happens).
     refreshIntervalMinutes: numberFromEnv(
@@ -47,7 +48,7 @@ function getConfig(env = process.env) {
     ),
     fetchTimeoutMs: numberFromEnv(env.FEED_FETCH_TIMEOUT_MS, 15000),
     // Bearer token for POST /api/import. Unset = endpoint disabled.
-    importToken: env.IMPORT_TOKEN || '',
+    importToken: normalizeEnvValue(env.IMPORT_TOKEN),
     importMaxBytes: numberFromEnv(env.IMPORT_MAX_BYTES, 5 * 1024 * 1024),
     importMaxPosts: numberFromEnv(env.IMPORT_MAX_POSTS, 100),
     // Seconds between checks for external changes to the archive file.
@@ -74,7 +75,7 @@ function getConfig(env = process.env) {
       env.IMPORT_REMOTE_IDS_TIMEOUT_MS,
       30000,
     ),
-    mediumUserAgent: env.MEDIUM_USER_AGENT || '',
+    mediumUserAgent: normalizeEnvValue(env.MEDIUM_USER_AGENT),
   };
 }
 

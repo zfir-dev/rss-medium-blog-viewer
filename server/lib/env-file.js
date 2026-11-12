@@ -3,6 +3,28 @@
 const fs = require('fs');
 
 /**
+ * Strip wrapping quotes and unescape \\, \', and \". Hosts often store
+ * values like Zafir\'s Blog, which would otherwise show a visible backslash.
+ */
+function normalizeEnvValue(value, fallback = '') {
+  if (value === undefined || value === null) {
+    return fallback;
+  }
+  let text = String(value).trim();
+  if (text === '') {
+    return fallback;
+  }
+  if (
+    text.length >= 2 &&
+    ((text.startsWith('"') && text.endsWith('"')) ||
+      (text.startsWith("'") && text.endsWith("'")))
+  ) {
+    text = text.slice(1, -1);
+  }
+  return text.replace(/\\([\\'"])/g, '$1');
+}
+
+/**
  * Minimal .env loader (KEY=value, optional quotes, # comments). Values already
  * present in process.env win, so real environment variables (e.g. from Docker or the host) take precedence.
  */
@@ -21,19 +43,17 @@ function loadEnvFile(filePath, env = process.env) {
     }
     const [, key, rawValue] = match;
     let value = rawValue.trim();
-    if (
+    const quoted =
       (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
-    } else {
+      (value.startsWith("'") && value.endsWith("'"));
+    if (!quoted) {
       value = value.replace(/\s+#.*$/, '');
     }
     if (env[key] === undefined) {
-      env[key] = value;
+      env[key] = normalizeEnvValue(value);
     }
   }
   return true;
 }
 
-module.exports = { loadEnvFile };
+module.exports = { loadEnvFile, normalizeEnvValue };
