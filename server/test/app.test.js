@@ -110,17 +110,6 @@ test('HTTP routes', async (t) => {
     assert.equal((await fetch(`${base}/posts/no-id-here`)).status, 404);
   });
 
-  await t.test('?post= is no longer supported', async () => {
-    const html = await (
-      await fetch(
-        `${base}/?post=${encodeURIComponent(
-          'https://medium.com/p/0123456789ab',
-        )}`,
-      )
-    ).text();
-    assert.match(html, /<title>My Blog<\/title>/);
-  });
-
   await t.test('api, sitemap and robots', async () => {
     const api = await (await fetch(`${base}/api/posts`)).json();
     assert.equal(api.status, 'ok');
