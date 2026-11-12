@@ -1,5 +1,7 @@
 'use strict';
 
+const { normalizeEnvValue } = require('../server/lib/env-file');
+
 module.exports = function (environment) {
   const ENV = {
     modulePrefix: 'rss-medium-blog-viewer',
@@ -18,13 +20,13 @@ module.exports = function (environment) {
       // Here you can pass flags/options to your application instance
       // when it is created
     },
-    page_title: process.env.PAGE_TITLE,
-    icon_url: process.env.ICON_URL,
-    ga_id: process.env.GA_ID,
-    medium_url: process.env.MEDIUM_URL,
-    medium_feed_url: process.env.MEDIUM_FEED_URL,
-    rss_2_json_api_key: process.env.RSS_2_JSON_API_KEY,
-    posts_api_url: process.env.POSTS_API_URL,
+    page_title: normalizeEnvValue(process.env.PAGE_TITLE),
+    icon_url: normalizeEnvValue(process.env.ICON_URL),
+    ga_id: normalizeEnvValue(process.env.GA_ID),
+    medium_url: normalizeEnvValue(process.env.MEDIUM_URL),
+    medium_feed_url: normalizeEnvValue(process.env.MEDIUM_FEED_URL),
+    rss_2_json_api_key: normalizeEnvValue(process.env.RSS_2_JSON_API_KEY),
+    posts_api_url: normalizeEnvValue(process.env.POSTS_API_URL),
   };
 
   if (environment === 'development') {
